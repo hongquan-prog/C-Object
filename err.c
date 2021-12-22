@@ -44,12 +44,3 @@ const char* error_to_str(err_t errno)
 	return s_error_str_array[module_id].error_array[error_code];
 }
 // generate end
-
-
-
-
-
-
-
-
-

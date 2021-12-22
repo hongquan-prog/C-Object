@@ -1,70 +1,104 @@
 #include "err.h"
 #include "Vector.h"
 #include "LinkList.h"
+#include "CircleList.h"
+#include "DualLinkList.h"
+#include "DualCircleList.h"
+#include <unistd.h>
 
 #define MAX_LEN 10
 
 struct list_node
 {
-    struct link_list_node next;
+    struct dual_link_list_node next;
     int data;
 };
-
-// 100个链表节点
-struct list_node  array1[MAX_LEN] = {0};
-// 100个顺序表节点
+// 10个链表节点
+struct list_node array1[MAX_LEN] = {0};
+// 10顺序表节点
 int array2[MAX_LEN];
-
-// 读取数据
-VectorNode read_data(Vector* list, int i)
-{
-    VectorNode ret = NULL;
-    // 使用各自的函数将数据进行获取
-    (*((vector_vtable**)list))->get(list, i, &ret);
-    return ret;
-}
-
-// 写入数据
-void write_data(Vector* list, int i, VectorNode node)
-{
-    (*((vector_vtable**)list))->insert(list, i, node);
-}
 
 int main()
 {
-    LinkList* list = link_list_create();
-    Vector* vector = vector_create(MAX_LEN);
-    
-    // 将数据插入表中
-    for(int i = 0; i < MAX_LEN; i++)
+    // 顺序表
+    Vector *list = vector_create(MAX_LEN);
+    for (int i = 0; i < MAX_LEN; i++)
     {
-        array1[i].data = MAX_LEN - i;
         array2[i] = i;
-        write_data(list, i, &array1[i]);
-        write_data(vector, i, &array2[i]);
+        list_insert(list, i, &array2[i]);
     }
-
-    printf("list length:%d\n", vector_length(list));
-    printf("vector length:%d\n", vector_length(vector));
-
-    // 输出链表中的值
-    printf("list:");
-    for(int i = 0; i < MAX_LEN; i++)
+    printf("list length:%d\n", list_length(list));
+    for(list_begin(list); !list_end(list); list_next(list))
     {
-        struct list_node* ret = read_data(list, i);
-        printf("%d ", ret->data);
-    }
-    printf("\n");
-
-    // 输出顺序表中的值
-    printf("vector:");
-    for(int i = 0; i < MAX_LEN; i++)
-    {
-        int* ret = read_data(vector, i);
+        int* ret = list_current(list);
         printf("%d ", *ret);
     }
     printf("\n");
+    list_destory(list);
 
-    vector_clear(vector);
-    link_list_clear(list);
+    // 单链表
+    list = link_list_create();
+    for (int i = 0; i < MAX_LEN; i++)
+    {
+        array1[i].data = MAX_LEN - i;
+        list_insert(list, i, &array1[i]);
+    }
+    printf("list length:%d\n", list_length(list));
+    for(list_begin(list); !list_end(list); list_next(list))
+    {
+        struct list_node* ret = list_current(list);
+        printf("%d ", ret->data);
+    }
+    printf("\n");
+    list_destory(list);
+
+    // 循环链表
+    list = circle_list_create();
+    for (int i = 0; i < MAX_LEN; i++)
+    {
+        array1[i].data = i;
+        list_insert(list, i, &array1[i]);
+    }
+    printf("list length:%d\n", list_length(list));
+    // for(list_begin(list); !list_end(list); list_next(list))
+    // {
+    //     struct list_node* ret = list_current(list);
+    //     printf("%d \n", ret->data);
+    //     sleep(1);
+    // }
+    printf("\n");
+    list_destory(list);
+
+    // 双链表
+    list = dual_link_list_create();
+    for (int i = 0; i < MAX_LEN; i++)
+    {
+        array1[i].data = MAX_LEN - i;
+        list_insert(list, i, &array1[i]);
+    }
+    printf("list length:%d\n", list_length(list));
+    for(list_begin(list); !list_end(list); list_next(list))
+    {
+        struct list_node* ret = list_current(list);
+        printf("%d ", ret->data);
+    }
+    printf("\n");
+    list_destory(list);
+
+    // 循环双链表
+    list = dual_circle_list_create();
+    for (int i = 0; i < MAX_LEN; i++)
+    {
+        array1[i].data = i;
+        list_insert(list, i, &array1[i]);
+    }
+    printf("list length:%d\n", list_length(list));
+    // for(list_begin(list); !list_end(list); list_next(list))
+    // {
+    //     struct list_node* ret = list_current(list);
+    //     printf("%d \n", ret->data);
+    //     sleep(1);
+    // }
+    printf("\n");
+    list_destory(list);
 }

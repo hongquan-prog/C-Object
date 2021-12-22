@@ -10,7 +10,7 @@ DEPS := $(addprefix $(DIR_BUILD)/,$(DEPS))
 all: $(ERROR_OUTPUT) $(APP)
 
 $(ERROR_OUTPUT): $(ERROR_INPUT)
-	$(ERR_GENERATOR) -i=$^ -o=$@ -input-begin=$(ERROR_BEGIN) -input-end=$(ERROR_END) -output-begin=$(OUTPUT_BEGIN) -output-end=$(OUTPUT_END)
+	error-generator -i=$^ -o=$@ -input-begin=$(ERROR_BEGIN) -input-end=$(ERROR_END) -output-begin=$(OUTPUT_BEGIN) -output-end=$(OUTPUT_END)
 
 $(APP):$(OBJS)
 	$(CC) -o $@ $^

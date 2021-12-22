@@ -16,8 +16,8 @@ typedef int32_t err_t;
 // 获取模块ID
 #define ERR_GET_MODULE_ID(_error_) (((_error_) >> 16) & 0x7fff)
 // 获取错误标识在数组中的下标
-#define ERR_GET_ERROR_INDEX(_error_) ((_error_) & 0xffff)
+#define ERR_GET_ERROR_INDEX(_error_) ((_error_)&0xffff)
 // 获取错误标识
-#define ERR_GET_ERROR_CODE(_error_) ((_error_) & 0x7fffffff)
+#define ERR_GET_ERROR_CODE(_error_) ((_error_)&0x7fffffff)
 
 #endif
