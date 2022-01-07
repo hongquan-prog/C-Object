@@ -18,12 +18,13 @@ typedef struct
     void (*begin)(List *list);
     bool (*end)(List *list);
     void (*next)(List *list);
+    void (*pre)(List *list);
     ListNode (*current)(List *list);
 } list_vtable_def;
 
 typedef struct
 {
-    list_vtable_def *vtable;
+    const list_vtable_def *vtable;
     int length;
 } list_def;
 
@@ -37,6 +38,7 @@ void list_destory(List *list);
 
 void list_begin(List *list);
 void list_next(List *list);
+void list_pre(List *list);
 bool list_end(List *list);
 ListNode list_current(List *list);
 

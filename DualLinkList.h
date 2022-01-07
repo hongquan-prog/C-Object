@@ -22,6 +22,7 @@ DualLinkListNode dual_link_list_position(DualLinkList *list, int position);
 
 void dual_link_list_begin(DualLinkList *list);
 void dual_link_list_next(DualLinkList *list);
+void dual_link_list_pre(DualLinkList *list);
 bool dual_link_list_end(DualLinkList *list);
 DualLinkListNode dual_link_list_current(DualLinkList *list);
 

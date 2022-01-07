@@ -95,6 +95,14 @@ void list_next(List *list)
     }
 }
 
+void list_pre(List *list)
+{
+    if ((*((list_vtable_def **)list))->next)
+    {
+        (*((list_vtable_def **)list))->pre(list);
+    }
+}
+
 bool list_end(List *list)
 {
     bool ret = true;

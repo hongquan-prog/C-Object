@@ -7,21 +7,21 @@ typedef struct
     VectorNode *head;
 } vector_def;
 
-static list_vtable_def s_vector_vtable = {
-    .insert = vector_insert,
-    .remove = vector_remove,
-    .find = vector_find,
-    .get = vector_get,
-    .set = vector_set,
-    .length = vector_length,
-    .destroy = vector_destroy,
-    .begin = vector_begin,
-    .end = vector_end,
-    .next = vector_next,
-    .current = vector_current};
-
 Vector *vector_create(int length)
 {
+    static list_vtable_def s_vector_vtable = {
+        .insert = vector_insert,
+        .remove = vector_remove,
+        .find = vector_find,
+        .get = vector_get,
+        .set = vector_set,
+        .length = vector_length,
+        .destroy = vector_destroy,
+        .begin = vector_begin,
+        .end = vector_end,
+        .next = vector_next,
+        .pre = NULL,
+        .current = vector_current};
     vector_def *ret = NULL;
 
     if (length > 0)
@@ -149,7 +149,7 @@ void vector_destroy(Vector *list)
 
 void vector_begin(Vector *list)
 {
-    if(list)
+    if (list)
     {
         ((vector_def *)list)->current = ((vector_def *)list)->head;
     }
@@ -157,7 +157,7 @@ void vector_begin(Vector *list)
 
 void vector_next(Vector *list)
 {
-    if(list)
+    if (list)
     {
         ((vector_def *)list)->current = ((vector_def *)list)->current + 1;
     }
@@ -166,7 +166,7 @@ void vector_next(Vector *list)
 bool vector_end(Vector *list)
 {
     bool ret = false;
-    if(list)
+    if (list)
     {
         vector_def *obj = list;
         ret = (obj->current == (obj->head + obj->base.length));

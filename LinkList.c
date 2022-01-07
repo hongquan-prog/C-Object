@@ -3,23 +3,9 @@
 typedef struct
 {
     list_def base;
-    struct link_list_node* current;
+    struct link_list_node *current;
     struct link_list_node head;
 } link_list_def;
-
-static list_vtable_def s_link_list_vtable =
-    {
-        .insert = link_list_insert,
-        .remove = link_list_remove,
-        .find = link_list_find,
-        .get = link_list_get,
-        .set = NULL,
-        .length = vector_length,
-        .destroy = link_list_destroy,
-        .begin = link_list_begin,
-        .end = link_list_end,
-        .next = link_list_next,
-        .current = link_list_current};
 
 LinkListNode link_list_position(LinkList *list, int position)
 {
@@ -34,6 +20,20 @@ LinkListNode link_list_position(LinkList *list, int position)
 
 LinkList *link_list_create()
 {
+    static list_vtable_def s_link_list_vtable = {
+        .insert = link_list_insert,
+        .remove = link_list_remove,
+        .find = link_list_find,
+        .get = link_list_get,
+        .set = NULL,
+        .length = vector_length,
+        .destroy = link_list_destroy,
+        .begin = link_list_begin,
+        .end = link_list_end,
+        .next = link_list_next,
+        .pre = NULL,
+        .current = link_list_current};
+
     link_list_def *list = malloc(sizeof(link_list_def));
     if (list)
     {

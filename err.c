@@ -1,4 +1,3 @@
-#include <stdbool.h>
 #include "err.h"
 
 // generate begin

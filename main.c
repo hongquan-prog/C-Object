@@ -93,7 +93,7 @@ int main()
         list_insert(list, i, &array1[i]);
     }
     printf("list length:%d\n", list_length(list));
-    // for(list_begin(list); !list_end(list); list_next(list))
+    // for(list_begin(list); !list_end(list); list_pre(list))
     // {
     //     struct list_node* ret = list_current(list);
     //     printf("%d \n", ret->data);

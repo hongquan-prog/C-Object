@@ -7,20 +7,6 @@ typedef struct
     struct link_list_node head;
 } circle_list_def;
 
-static list_vtable_def s_circle_list_vtable =
-    {
-        .insert = circle_list_insert,
-        .remove = circle_list_remove,
-        .find = link_list_find,
-        .get = circle_list_get,
-        .set = NULL,
-        .length = vector_length,
-        .destroy = circle_list_destroy,
-        .begin = circle_list_begin,
-        .end = circle_list_end,
-        .next = circle_list_next,
-        .current = circle_list_current};
-
 static void last_to_first(circle_list_def *list)
 {
     struct link_list_node *ret = link_list_position(list, list->base.length - 1);
@@ -32,6 +18,20 @@ static void last_to_first(circle_list_def *list)
 
 CircleList *circle_list_create()
 {
+    static list_vtable_def s_circle_list_vtable = {
+        .insert = circle_list_insert,
+        .remove = circle_list_remove,
+        .find = link_list_find,
+        .get = circle_list_get,
+        .set = NULL,
+        .length = vector_length,
+        .destroy = circle_list_destroy,
+        .begin = circle_list_begin,
+        .end = circle_list_end,
+        .next = circle_list_next,
+        .pre = NULL,
+        .current = circle_list_current};
+
     circle_list_def *list = link_list_create();
     if (list)
     {
@@ -52,7 +52,6 @@ bool circle_list_insert(CircleList *list, int i, const CircleListNode node)
         last_to_first(obj);
     }
 
-    
     return ret;
 }
 
