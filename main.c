@@ -1,104 +1,73 @@
 #include "err.h"
-#include "Vector.h"
-#include "LinkList.h"
-#include "CircleList.h"
-#include "DualLinkList.h"
-#include "DualCircleList.h"
+#include "vector.h"
+#include "link_list.h"
+#include "circle_list.h"
+#include "dual_link_list.h"
+#include "dual_circle_list.h"
 #include <unistd.h>
 
 #define MAX_LEN 10
+static int array[MAX_LEN] = {0};
 
-struct list_node
+void function_test(list_obj_t *list)
 {
-    struct dual_link_list_node next;
-    int data;
-};
-// 10个链表节点
-struct list_node array1[MAX_LEN] = {0};
-// 10顺序表节点
-int array2[MAX_LEN];
+    int i = 0;
 
-int main()
-{
-    // 顺序表
-    Vector *list = vector_create(MAX_LEN);
+    printf("type: %s\r\n", list->class_p->type_name);
+
+    /* insert */
     for (int i = 0; i < MAX_LEN; i++)
     {
-        array2[i] = i;
-        list_insert(list, i, &array2[i]);
+        array[i] = i;
+        list_insert(list, i, &array[i]);
     }
-    printf("list length:%d\n", list_length(list));
-    for(list_begin(list); !list_end(list); list_next(list))
+
+    /* traverse */
+    printf("traverse: ");
+    for (list_begin(list), i = 0; !list_end(list) && (i < list_length(list)); list_next(list), i++)
     {
-        int* ret = list_current(list);
+        int *ret = list_current(list);
         printf("%d ", *ret);
     }
     printf("\n");
-    list_destory(list);
 
-    // 单链表
-    list = link_list_create();
-    for (int i = 0; i < MAX_LEN; i++)
+    /* find */
+    for (i = 0; i < list_length(list); i++)
     {
-        array1[i].data = MAX_LEN - i;
-        list_insert(list, i, &array1[i]);
+        printf("%d position is: %d\r\n", array[i], list_find(list, &array[i]));
     }
-    printf("list length:%d\n", list_length(list));
-    for(list_begin(list); !list_end(list); list_next(list))
-    {
-        struct list_node* ret = list_current(list);
-        printf("%d ", ret->data);
-    }
-    printf("\n");
-    list_destory(list);
 
-    // 循环链表
-    list = circle_list_create();
-    for (int i = 0; i < MAX_LEN; i++)
+    /* remove */
+    while (list_length(list))
     {
-        array1[i].data = i;
-        list_insert(list, i, &array1[i]);
+        int ret = 0;
+        list_get(list, 0, &ret);
+        printf("remove %d\r\n", ret);
+        list_remove(list, 0);
     }
-    printf("list length:%d\n", list_length(list));
-    // for(list_begin(list); !list_end(list); list_next(list))
-    // {
-    //     struct list_node* ret = list_current(list);
-    //     printf("%d \n", ret->data);
-    //     sleep(1);
-    // }
-    printf("\n");
-    list_destory(list);
+}
 
-    // 双链表
-    list = dual_link_list_create();
-    for (int i = 0; i < MAX_LEN; i++)
-    {
-        array1[i].data = MAX_LEN - i;
-        list_insert(list, i, &array1[i]);
-    }
-    printf("list length:%d\n", list_length(list));
-    for(list_begin(list); !list_end(list); list_next(list))
-    {
-        struct list_node* ret = list_current(list);
-        printf("%d ", ret->data);
-    }
-    printf("\n");
-    list_destory(list);
 
-    // 循环双链表
-    list = dual_circle_list_create();
-    for (int i = 0; i < MAX_LEN; i++)
-    {
-        array1[i].data = i;
-        list_insert(list, i, &array1[i]);
-    }
-    printf("list length:%d\n", list_length(list));
-    // for(list_begin(list); !list_end(list); list_pre(list))
-    // {
-    //     struct list_node* ret = list_current(list);
-    //     printf("%d \n", ret->data);
-    //     sleep(1);
-    // }
-    printf("\n");
-    list_destory(list);
+int main()
+{
+    list_obj_t *list = NULL;
+    list = vector_create(sizeof(int), MAX_LEN);
+    function_test(list);
+    list_delete(list);
+
+    list = link_list_create(sizeof(int));
+    function_test(list);
+    list_delete(list);
+
+    list = circle_list_create(sizeof(int));
+    function_test(list);
+    list_delete(list);
+
+    list = dual_link_list_create(sizeof(int));
+    function_test(list);
+    list_delete(list);
+
+    list = dual_circle_list_create(sizeof(int));
+    function_test(list);
+    list_delete(list);
 }
