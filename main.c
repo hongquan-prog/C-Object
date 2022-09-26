@@ -17,7 +17,7 @@ void function_test(list_obj_t *list)
     printf("type: %s\r\n", list->class_p->type_name);
 
     /* insert */
-    for (int i = 0; i < MAX_LEN; i++)
+    for (i = 0; i < MAX_LEN; i++)
     {
         array[i] = i;
         list_insert(list, i, &array[i]);
@@ -69,7 +69,7 @@ void function_test(list_obj_t *list)
 
         /* push front */
         printf("push front: ");
-        for (int i = 0; i < MAX_LEN; i++)
+        for (i = 0; i < MAX_LEN; i++)
         {
             dual_circle_list_push_front(list, &i);
             printf("%d ", i);
@@ -78,7 +78,7 @@ void function_test(list_obj_t *list)
 
         /* pop back */
         printf("pop back: ");
-        for (int i = 0; i < MAX_LEN; i++)
+        for (i = 0; i < MAX_LEN; i++)
         {
             int temp = 0;
             dual_circle_list_pop_back(list, &temp);
@@ -88,7 +88,7 @@ void function_test(list_obj_t *list)
 
         /* push back */
         printf("push back: ");
-        for (int i = 0; i < MAX_LEN; i++)
+        for (i = 0; i < MAX_LEN; i++)
         {
             dual_circle_list_push_back(list, &i);
             printf("%d ", i);
@@ -110,6 +110,7 @@ void function_test(list_obj_t *list)
 int main()
 {
     list_obj_t *list = NULL;
+    
     list = vector_create(sizeof(int), MAX_LEN);
     function_test(list);
     list_delete(list);
