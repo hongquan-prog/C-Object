@@ -9,8 +9,8 @@ static list_vtable_t s_dual_circle_list_vtable = {
     .insert = dual_circle_list_insert,
     .remove = dual_circle_list_remove,
     .find = dual_link_list_find,
-    .get = dual_link_list_get,
-    .set = NULL,
+    .get = dual_circle_list_get,
+    .set = dual_circle_list_set,
     .length = NULL,
     .begin = dual_link_list_begin,
     .end = dual_circle_list_end,
@@ -44,7 +44,8 @@ static dual_link_list_node_t *dual_circle_list_position(list_obj_t *obj, int pos
     if (position > obj->list_length / 2)
     {
         current = current->next->pre;
-        for (int i = 0; i < position; i++)
+        
+        for (int i = obj->list_length; i != position; i--)
         {
             current = current->pre;
         }
@@ -70,7 +71,47 @@ static void dual_circle_list_add(dual_link_list_node_t *node,
     pre->next = node;
 }
 
-bool dual_circle_push_back(list_obj_t *obj, list_node_t *node)
+bool dual_circle_list_get(list_obj_t *obj, int i, list_node_t *node)
+{
+    bool ret = true;
+    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
+    
+    i = (i % obj->list_length);
+
+    if (list && node)
+    {
+        dual_link_list_node_t *current = dual_circle_list_position(obj, i);
+        memcpy(node, current->next->user_data, obj->item_size);
+    }
+    else
+    {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool dual_circle_list_set(list_obj_t *obj, int i, const list_node_t *node)
+{
+    bool ret = true;
+    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
+    
+    i = (i % obj->list_length);
+
+    if (list && node)
+    {
+        dual_link_list_node_t *current = dual_circle_list_position(obj, i);
+        memcpy(current->next->user_data, node, obj->item_size);
+    }
+    else
+    {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool dual_circle_list_push_back(list_obj_t *obj, list_node_t *node)
 {
     bool ret = false;
     dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
@@ -110,20 +151,20 @@ bool dual_circle_push_back(list_obj_t *obj, list_node_t *node)
     return ret;
 }
 
-bool dual_circle_push_front(list_obj_t *obj, list_node_t *node)
+bool dual_circle_list_push_front(list_obj_t *obj, list_node_t *node)
 {
     dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
-    bool ret = dual_circle_push_back(obj, node);
+    bool ret = dual_circle_list_push_back(obj, node);
 
     if (ret)
     {
-        list->head.next = node;
+        list->head.next = list->head.next->pre;
     }
 
     return ret;
 }
 
-void dual_circle_pop_front(list_obj_t *obj, list_node_t * node)
+void dual_circle_list_pop_front(list_obj_t *obj, list_node_t * node)
 {
     dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
 
@@ -134,7 +175,7 @@ void dual_circle_pop_front(list_obj_t *obj, list_node_t * node)
     }
 }
 
-void dual_circle_pop_back(list_obj_t *obj, list_node_t * node)
+void dual_circle_list_pop_back(list_obj_t *obj, list_node_t * node)
 {
     dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
 
@@ -198,7 +239,7 @@ void dual_circle_list_remove(list_obj_t *obj, int i)
 
     if (obj && (i >= 0) && (i < obj->list_length))
     {
-        dual_link_list_node_t *current = dual_link_list_position(obj, i);
+        dual_link_list_node_t *current = dual_circle_list_position(obj, i);
         dual_link_list_node_t *toDel = current->next;
         dual_link_list_node_t *pre = toDel->pre;
         dual_link_list_node_t *next = toDel->next;

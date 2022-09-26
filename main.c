@@ -5,6 +5,7 @@
 #include "dual_link_list.h"
 #include "dual_circle_list.h"
 #include <unistd.h>
+#include <string.h>
 
 #define MAX_LEN 10
 static int array[MAX_LEN] = {0};
@@ -35,6 +36,64 @@ void function_test(list_obj_t *list)
     for (i = 0; i < list_length(list); i++)
     {
         printf("%d position is: %d\r\n", array[i], list_find(list, &array[i]));
+    }
+
+    /* set */
+    for (i = 0; i < list_length(list); i++)
+    {
+        int val = MAX_LEN - i;
+        list_set(list, i, &val);
+    }
+
+    /* get */
+    printf("get: ");
+    for (i = 0; i < list_length(list); i++)
+    {
+        int val = 0;
+        list_get(list, i, &val);
+        printf("%d ", val);
+    }
+    printf("\n");
+
+    if (strcmp(list->class_p->type_name, "dual circle list") == 0)
+    {
+        /* pop front */
+        printf("pop front: ");
+        while (list_length(list))
+        {
+            int temp = 0;
+            dual_circle_list_pop_front(list, &temp);
+            printf("%d ", temp);
+        }
+        printf("\r\n");
+
+        /* push front */
+        printf("push front: ");
+        for (int i = 0; i < MAX_LEN; i++)
+        {
+            dual_circle_list_push_front(list, &i);
+            printf("%d ", i);
+        }
+        printf("\r\n");
+
+        /* pop back */
+        printf("pop back: ");
+        for (int i = 0; i < MAX_LEN; i++)
+        {
+            int temp = 0;
+            dual_circle_list_pop_back(list, &temp);
+            printf("%d ", i);
+        }
+        printf("\r\n");
+
+        /* push back */
+        printf("push back: ");
+        for (int i = 0; i < MAX_LEN; i++)
+        {
+            dual_circle_list_push_back(list, &i);
+            printf("%d ", i);
+        }
+        printf("\r\n");
     }
 
     /* remove */

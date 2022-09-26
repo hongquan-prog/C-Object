@@ -10,7 +10,7 @@ const static list_vtable_t s_dual_link_list_vtable = {
     .remove = dual_link_list_remove,
     .find = dual_link_list_find,
     .get = dual_link_list_get,
-    .set = NULL,
+    .set = dual_link_list_set,
     .length = NULL,
     .begin = dual_link_list_begin,
     .end = dual_link_list_end,
@@ -152,6 +152,24 @@ bool dual_link_list_get(list_obj_t *obj, int i, list_node_t *node)
     {
         dual_link_list_node_t *current = dual_link_list_position(obj, i);
         memcpy(node, current->next->user_data, obj->item_size);
+    }
+    else
+    {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool dual_link_list_set(list_obj_t *obj, int i, const list_node_t *node)
+{
+    bool ret = true;
+    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
+
+    if (obj && (i >= 0) && (i < obj->list_length) && node)
+    {
+        dual_link_list_node_t *current = dual_link_list_position(obj, i);
+        memcpy(current->next->user_data, node, obj->item_size);
     }
     else
     {
