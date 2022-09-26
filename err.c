@@ -8,20 +8,20 @@ static struct error_str_t
 	const char ** error_array;
 }s_error_str_array[1];
 
-static const char* s_exception_enum_t_err_str[] = {
+static const char* s_exception_enum_t_str[] = {
 	"Arithmetic",
 	"NullPointer",
 	"IndexOutofBounds",
 	"NoEnoughMemory",
 	"InvalidParameter",
-	"InvalidOperation",
+	"ConditionDropped",
 };
 
 void error_str_init()
 {
 	s_error_str_array[EXCEPTION_MODULE].exist = true;
 	s_error_str_array[EXCEPTION_MODULE].last_error = 5;
-	s_error_str_array[EXCEPTION_MODULE].error_array = s_exception_enum_t_err_str;
+	s_error_str_array[EXCEPTION_MODULE].error_array = s_exception_enum_t_str;
 }
 
 const char* error_to_str(err_t errno)
