@@ -10,7 +10,7 @@ static list_vtable_t s_circle_list_vtable = {
         .remove = circle_list_remove,
         .find = link_list_find,
         .get = circle_list_get,
-        .set = NULL,
+        .set = circle_list_set,
         .length = NULL,
         .begin = link_list_begin,
         .end = circle_list_end,
@@ -88,6 +88,14 @@ bool circle_list_get(list_obj_t *obj, int i, list_node_t *node)
     return link_list_get(obj, i, node);
 }
 
+bool circle_list_set(list_obj_t *obj, int i, const list_node_t *node)
+{
+    link_list_obj_t *list = (link_list_obj_t *)obj;
+
+    i = (i % obj->list_length);
+    
+    return link_list_set(obj, i, node);
+}
 
 bool circle_list_end(list_obj_t *obj)
 {

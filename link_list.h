@@ -22,6 +22,7 @@ bool link_list_insert(list_obj_t *obj, int i, const list_node_t *node);
 void link_list_remove(list_obj_t *obj, int i);
 int link_list_find(list_obj_t *obj, const list_node_t *node);
 bool link_list_get(list_obj_t *obj, int i, list_node_t *node);
+bool link_list_set(list_obj_t *obj, int i, const list_node_t *node);
 
 void link_list_begin(list_obj_t *obj);
 void link_list_next(list_obj_t *obj);

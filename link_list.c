@@ -10,7 +10,7 @@ const static list_vtable_t s_link_list_vtable = {
         .remove = link_list_remove,
         .find = link_list_find,
         .get = link_list_get,
-        .set = NULL,
+        .set = link_list_set,
         .length = NULL,
         .begin = link_list_begin,
         .end = link_list_end,
@@ -149,6 +149,24 @@ bool link_list_get(list_obj_t *obj, int i, list_node_t *node)
     {
         link_list_node_t *current = link_list_position(list, i);
         memcpy(node, current->next->user_data, obj->item_size);
+    }
+    else
+    {
+        ret = false;
+    }
+
+    return ret;
+}
+
+bool link_list_set(list_obj_t *obj, int i, const list_node_t *node)
+{
+    bool ret = true;
+    link_list_obj_t *list = (link_list_obj_t *)obj;
+
+    if (obj && (i >= 0) && (i < obj->list_length) && node)
+    {
+        link_list_node_t *current = link_list_position(list, i);
+        memcpy(current->next->user_data, node, obj->item_size);
     }
     else
     {

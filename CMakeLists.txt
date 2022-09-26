@@ -15,5 +15,15 @@ set(C_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 # target
 add_executable(${CMAKE_PROJECT_NAME} ${C_SOURCES})
 
+# compile option
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE 
+$<$<CONFIG:DEBUG>:-g>
+$<$<CONFIG:RELEASE>:-O3>
+)
+
+# link option
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE 
+$<$<CONFIG:DEBUG>:-fsanitize=address>)
+
 # include path
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${C_INCLUDES})
