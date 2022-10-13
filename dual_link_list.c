@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static void dual_link_list_construct(list_obj_t *obj, int item_size);
+static void dual_link_list_construct(list_obj_t *obj, list_construct_args_t *args);
 static void dual_link_list_destruct(list_obj_t *obj);
 
 const static list_vtable_t s_dual_link_list_vtable = {
@@ -20,6 +20,7 @@ const static list_vtable_t s_dual_link_list_vtable = {
 
 const list_obj_class_t g_dual_link_list_class = {
     .vtable = &s_dual_link_list_vtable,
+    .constructor_cb = dual_link_list_construct,
     .destructor_cb = dual_link_list_destruct,
     .instance_size = sizeof(dual_link_list_obj_t),
     .type_name = "dual link list"};
@@ -27,10 +28,14 @@ const list_obj_class_t g_dual_link_list_class = {
 list_obj_t *dual_link_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
+    list_construct_args_t args = { 0 };
 
     if (item_size > 0)
     {
-        obj = list_obj_class_create_obj(&g_dual_link_list_class, item_size);
+        /* pass args */
+        args.item_size = &item_size;
+        /* allocate memory and init data */
+        obj = list_obj_class_create_obj(&g_dual_link_list_class, &args);
     }
 
     return obj;
@@ -227,6 +232,19 @@ list_node_t *dual_link_list_current(list_obj_t *obj)
     dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
 
     return (obj) ? (list->current->user_data) : (NULL);
+}
+
+static void dual_link_list_construct(list_obj_t *obj, list_construct_args_t *args)
+{
+    if (obj)
+    {
+        dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
+
+        list->current = NULL;
+        list->head.next = NULL;
+        list->head.pre = NULL;
+        list->head.user_data = NULL;
+    }
 }
 
 static void dual_link_list_destruct(list_obj_t *obj)

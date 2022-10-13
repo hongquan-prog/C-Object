@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+static void vector_construct(list_obj_t *obj, list_construct_args_t *args);
 static void vector_destruct(list_obj_t *obj);
 
 const static list_vtable_t s_vector_vtable = {
@@ -15,38 +16,27 @@ const static list_vtable_t s_vector_vtable = {
     .end = vector_end,
     .next = vector_next,
     .pre = NULL,
-    .current = vector_current};
+    .current = vector_current };
 
 const list_obj_class_t g_vector_class = {
     .vtable = &s_vector_vtable,
+    .constructor_cb = vector_construct,
     .destructor_cb = vector_destruct,
     .instance_size = sizeof(vector_obj_t),
-    .type_name = "vector"};
+    .type_name = "vector" };
 
-list_obj_t *vector_create(int item_size, int length)
+list_obj_t *vector_create(int item_size, int capacity)
 {
     list_obj_t *obj = NULL;
+    vector_construct_args_t args = { 0 };
 
-    if ((length > 0) && (item_size > 0))
+    if ((capacity > 0) && (item_size > 0))
     {
-        obj = list_obj_class_create_obj(&g_vector_class, item_size);
-
-        if (obj)
-        {
-            vector_obj_t *ret = (vector_obj_t *)obj;
-            ret->array_length = length;
-            ret->array = malloc(item_size * length);
-
-            if (ret->array)
-            {
-                ret->current = NULL;
-            }
-            else
-            {
-                free(obj);
-                obj = NULL;
-            }
-        }
+        /* pass args */
+        args.item_size = &item_size;
+        args.array_capacity = &capacity;
+        /* allocate memory and init data */
+        obj = list_obj_class_create_obj(&g_vector_class, (list_construct_args_t *)&args);
     }
 
     return obj;
@@ -57,7 +47,7 @@ bool vector_insert(list_obj_t *obj, int i, const list_node_t *node)
     bool ret = true;
     vector_obj_t *list = (vector_obj_t *)obj;
 
-    if (obj && (i >= 0) && (i <= obj->list_length) && (obj->list_length < list->array_length) && node)
+    if (obj && (i >= 0) && (i <= obj->list_length) && (obj->list_length < list->array_capacity) && node)
     {
         char *dest = list->array + (obj->item_size * obj->list_length);
 
@@ -189,6 +179,28 @@ bool vector_end(list_obj_t *obj)
 list_node_t *vector_current(list_obj_t *obj)
 {
     return (obj) ? (((vector_obj_t *)obj)->current) : (NULL);
+}
+
+static void vector_construct(list_obj_t *obj, list_construct_args_t *args)
+{
+    vector_construct_args_t *vector_args = (vector_construct_args_t *)args;
+    
+    if (obj)
+    {
+        vector_obj_t *ret = (vector_obj_t *)obj;
+        ret->array_capacity = *(vector_args->array_capacity);
+        ret->array = malloc(obj->item_size * ret->array_capacity);
+
+        if (ret->array)
+        {
+            ret->current = NULL;
+        }
+        else
+        {
+            free(obj);
+            obj = NULL;
+        }
+    }
 }
 
 static void vector_destruct(list_obj_t *obj)

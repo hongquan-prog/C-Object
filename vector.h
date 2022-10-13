@@ -5,9 +5,16 @@
 
 typedef struct
 {
+    int *item_size;
+    void (*item_echo)(void *item);
+    int *array_capacity;
+} vector_construct_args_t;
+
+typedef struct
+{
     list_obj_t obj;
     char *array;
-    int array_length;
+    int array_capacity;
     list_node_t *current;
 } vector_obj_t;
 

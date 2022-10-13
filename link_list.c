@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static void link_list_construct(list_obj_t *obj, int item_size);
+static void link_list_construct(list_obj_t *obj, list_construct_args_t *args);
 static void link_list_destruct(list_obj_t *obj);
 
 const static list_vtable_t s_link_list_vtable = {
@@ -28,10 +28,14 @@ const list_obj_class_t g_link_list_class = {
 list_obj_t *link_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
+    list_construct_args_t args = { 0 };
 
     if (item_size > 0)
     {
-        obj = list_obj_class_create_obj(&g_link_list_class, item_size);
+        /* pass args */
+        args.item_size = &item_size;
+        /* allocate memory and init data */
+        obj = list_obj_class_create_obj(&g_link_list_class, &args);
     }
 
     return obj;
@@ -215,7 +219,7 @@ list_node_t *link_list_current(list_obj_t *obj)
     return (list) ? (list->current->user_data) : (NULL);
 }
 
-static void link_list_construct(list_obj_t *obj, int item_size)
+static void link_list_construct(list_obj_t *obj, list_construct_args_t *args)
 {
     if (obj)
     {

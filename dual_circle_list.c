@@ -27,10 +27,14 @@ const list_obj_class_t g_dual_circle_list_class = {
 list_obj_t *dual_circle_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
+    list_construct_args_t args = { 0 };
 
     if (item_size > 0)
     {
-        obj = list_obj_class_create_obj(&g_dual_circle_list_class, item_size);
+        /* pass args */
+        args.item_size = &item_size;
+        /* allocate memory and init data */
+        obj = list_obj_class_create_obj(&g_dual_circle_list_class, &args);
     }
 
     return obj;

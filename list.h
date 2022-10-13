@@ -22,11 +22,16 @@ typedef struct _list_vtable_t
     list_node_t *(*current)(list_obj_t *obj);
 } list_vtable_t;
 
+typedef struct
+{
+    int *item_size;
+} list_construct_args_t;
+
 typedef struct _list_obj_class_t
 {
     const struct _list_vtable_t *vtable;
     const struct _list_obj_class_t *base_class;
-    void (*constructor_cb)(list_obj_t *class_p, int node_size);
+    void (*constructor_cb)(list_obj_t *class_p, list_construct_args_t *args);
     void (*destructor_cb)(list_obj_t *class_p);
     int instance_size;
     const char *type_name;
@@ -39,7 +44,7 @@ struct _list_obj_t
     int list_length;
 };
 
-list_obj_t *list_obj_class_create_obj(const list_obj_class_t *class_p, int item_size);
+list_obj_t *list_obj_class_create_obj(const list_obj_class_t *class_p, list_construct_args_t *args);
 
 list_obj_t *list_delete(list_obj_t *obj);
 void list_insert(list_obj_t *obj, int i, const list_node_t *node);

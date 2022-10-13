@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void list_obj_construct(list_obj_t *obj, int item_size);
+static void list_obj_construct(list_obj_t *obj, list_construct_args_t *args);
 static void list_obj_destruct(list_obj_t *obj);
 
-list_obj_t *list_obj_class_create_obj(const list_obj_class_t *class_p, int item_size)
+list_obj_t *list_obj_class_create_obj(const list_obj_class_t *class_p, list_construct_args_t *args)
 {
     uint32_t s = class_p->instance_size;
     list_obj_t *obj = malloc(s);
@@ -17,7 +17,7 @@ list_obj_t *list_obj_class_create_obj(const list_obj_class_t *class_p, int item_
 
     memset(obj, 0, s);
     obj->class_p = class_p;
-    list_obj_construct(obj, item_size);
+    list_obj_construct(obj, args);
 
     return obj;
 }
@@ -157,7 +157,7 @@ list_node_t *list_current(list_obj_t *list)
  * static function
  *----------------*/
 
-static void list_obj_construct(list_obj_t *obj, int item_size)
+static void list_obj_construct(list_obj_t *obj, list_construct_args_t *args)
 {
     const list_obj_class_t *original_class_p = obj->class_p;
 
@@ -167,16 +167,17 @@ static void list_obj_construct(list_obj_t *obj, int item_size)
         obj->class_p = obj->class_p->base_class;
 
         /*Construct the base first*/
-        list_obj_construct(obj, item_size);
+        list_obj_construct(obj, args);
     }
 
     /*Restore the original class*/
     obj->class_p = original_class_p;
-    obj->item_size = item_size;
+    obj->item_size = *(args->item_size);
+    obj->list_length = 0;
 
     if (obj->class_p->constructor_cb)
     {
-        obj->class_p->constructor_cb(obj, item_size);
+        obj->class_p->constructor_cb(obj, args);
     }
 }
 
