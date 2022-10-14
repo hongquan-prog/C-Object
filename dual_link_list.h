@@ -12,7 +12,8 @@ typedef struct _dual_link_list_node_t
 
 typedef struct _dual_link_list_obj_t
 {
-    list_obj_t obj;
+    list_obj_t base;
+
     dual_link_list_node_t head;
     dual_link_list_node_t *current;
 } dual_link_list_obj_t;

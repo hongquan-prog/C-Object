@@ -5,14 +5,15 @@
 
 typedef struct
 {
-    int *item_size;
-    void (*item_echo)(void *item);
+    list_constructor_args_t list_args;
+
     int *array_capacity;
-} vector_construct_args_t;
+} vector_constructor_args_t;
 
 typedef struct
 {
-    list_obj_t obj;
+    list_obj_t base;
+    
     char *array;
     int array_capacity;
     list_node_t *current;

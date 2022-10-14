@@ -3,6 +3,8 @@
 
 #include "link_list.h"
 
+typedef link_list_obj_t circle_list_obj_t;
+
 list_obj_t *circle_list_create(int item_size);
 bool circle_list_insert(list_obj_t *obj, int i, const list_node_t *node);
 void circle_list_remove(list_obj_t *obj, int i);

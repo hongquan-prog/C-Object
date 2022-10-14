@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-static void link_list_construct(list_obj_t *obj, list_construct_args_t *args);
-static void link_list_destruct(list_obj_t *obj);
+extern const obj_class_t g_list_class;
+static void link_list_constructor(obj_t *obj, obj_constructor_args_t *args);
+static void link_list_destructor(obj_t *obj);
 
 const static list_vtable_t s_link_list_vtable = {
         .insert = link_list_insert,
@@ -16,26 +17,27 @@ const static list_vtable_t s_link_list_vtable = {
         .end = link_list_end,
         .next = link_list_next,
         .pre = NULL,
-        .current = link_list_current};
+        .current = link_list_current };
 
-const list_obj_class_t g_link_list_class = {
-    .vtable = &s_link_list_vtable,
-    .constructor_cb = link_list_construct,
-    .destructor_cb = link_list_destruct,
+const obj_class_t g_link_list_class = {
+    .vtable = (obj_vtable_t *)&s_link_list_vtable,
+    .base_class = &g_list_class,
+    .constructor_cb = link_list_constructor,
+    .destructor_cb = link_list_destructor,
     .instance_size = sizeof(link_list_obj_t),
-    .type_name = "link list"};
+    .class_name = "link list" };
 
 list_obj_t *link_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
-    list_construct_args_t args = { 0 };
+    list_constructor_args_t args = { 0 };
 
     if (item_size > 0)
     {
         /* pass args */
         args.item_size = &item_size;
         /* allocate memory and init data */
-        obj = list_obj_class_create_obj(&g_link_list_class, &args);
+        obj = (list_obj_t *)obj_class_create_obj(&g_link_list_class, (obj_constructor_args_t *)&args);
     }
 
     return obj;
@@ -219,7 +221,7 @@ list_node_t *link_list_current(list_obj_t *obj)
     return (list) ? (list->current->user_data) : (NULL);
 }
 
-static void link_list_construct(list_obj_t *obj, list_construct_args_t *args)
+static void link_list_constructor(obj_t *obj, obj_constructor_args_t *args)
 {
     if (obj)
     {
@@ -231,10 +233,12 @@ static void link_list_construct(list_obj_t *obj, list_construct_args_t *args)
     }
 }
 
-static void link_list_destruct(list_obj_t *obj)
+static void link_list_destructor(obj_t *obj)
 {
-    while (obj->list_length)
+    list_obj_t *list = (list_obj_t *)obj;
+    
+    while (list->list_length)
     {
-        link_list_remove(obj, 0);
+        link_list_remove(list, 0);
     }
 }

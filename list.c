@@ -1,42 +1,44 @@
 #include "list.h"
 #include <stdlib.h>
-#include <string.h>
 
-static void list_obj_construct(list_obj_t *obj, list_construct_args_t *args);
-static void list_obj_destruct(list_obj_t *obj);
+static void list_constructor(obj_t *obj, obj_constructor_args_t *args);
 
-list_obj_t *list_obj_class_create_obj(const list_obj_class_t *class_p, list_construct_args_t *args)
+const obj_class_t g_list_class = {
+    .vtable = NULL,
+    .base_class = NULL,
+    .constructor_cb = list_constructor,
+    .destructor_cb = NULL,
+    .instance_size = sizeof(list_obj_t),
+    .class_name = "list" };
+
+static void list_constructor(obj_t *obj, obj_constructor_args_t *args)
 {
-    uint32_t s = class_p->instance_size;
-    list_obj_t *obj = malloc(s);
+    list_constructor_args_t *list_args = (list_constructor_args_t *)args;
 
-    if (obj == NULL)
+    if (obj)
     {
-        return NULL;
+        list_obj_t *ret = (list_obj_t *)obj;
+        ret->item_size = *(list_args->item_size);
+        ret->list_length = 0;
     }
-
-    memset(obj, 0, s);
-    obj->class_p = class_p;
-    list_obj_construct(obj, args);
-
-    return obj;
 }
 
-list_obj_t *list_delete(list_obj_t *obj)
-{
-    list_obj_destruct(obj);
-    free(obj);
-}
-
-/*-----------------
+/*--------------------------------------------------------------
  * interface
- *----------------*/
+ *------------------------------------------------------------*/
+
+void list_delete(list_obj_t *obj)
+{
+    obj_class_delete_obj((obj_t *)obj);
+}
 
 void list_insert(list_obj_t *list, int i, const list_node_t *node)
 {
-    if (list->class_p->vtable->insert)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->insert)
     {
-        list->class_p->vtable->insert(list, i, node);
+        vtable->insert(list, i, node);
     }
     else
     {
@@ -46,9 +48,11 @@ void list_insert(list_obj_t *list, int i, const list_node_t *node)
 
 void list_remove(list_obj_t *list, int i)
 {
-    if (list->class_p->vtable->remove)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->remove)
     {
-        list->class_p->vtable->remove(list, i);
+        vtable->remove(list, i);
     }
     else
     {
@@ -59,10 +63,11 @@ void list_remove(list_obj_t *list, int i)
 bool list_get(list_obj_t *list, int i, list_node_t *node)
 {
     bool ret = false;
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
 
-    if (list->class_p->vtable->get)
+    if (vtable->get)
     {
-        return list->class_p->vtable->get(list, i, node);
+        return vtable->get(list, i, node);
     }
     else
     {
@@ -73,9 +78,11 @@ bool list_get(list_obj_t *list, int i, list_node_t *node)
 
 bool list_set(list_obj_t *list, int i, const list_node_t *node)
 {
-    if (list->class_p->vtable->set)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->set)
     {
-        return list->class_p->vtable->set(list, i, node);
+        return vtable->set(list, i, node);
     }
     else
     {
@@ -86,9 +93,11 @@ bool list_set(list_obj_t *list, int i, const list_node_t *node)
 
 int list_length(list_obj_t *list)
 {
-    if (list->class_p->vtable->length)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->length)
     {
-        return list->class_p->vtable->length(list);
+        return vtable->length(list);
     }
     else
     {
@@ -98,9 +107,11 @@ int list_length(list_obj_t *list)
 
 int list_find(list_obj_t *list, const list_node_t *node)
 {
-    if (list->class_p->vtable->find)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->find)
     {
-        return list->class_p->vtable->find(list, node);
+        return vtable->find(list, node);
     }
     else
     {
@@ -111,34 +122,42 @@ int list_find(list_obj_t *list, const list_node_t *node)
 
 void list_begin(list_obj_t *list)
 {
-    if (list->class_p->vtable->begin)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->begin)
     {
-        list->class_p->vtable->begin(list);
+        vtable->begin(list);
     }
 }
 
 void list_next(list_obj_t *list)
 {
-    if (list->class_p->vtable->next)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->next)
     {
-        list->class_p->vtable->next(list);
+        vtable->next(list);
     }
 }
 
 void list_pre(list_obj_t *list)
 {
-    if (list->class_p->vtable->next)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->next)
     {
-        list->class_p->vtable->pre(list);
+        vtable->pre(list);
     }
 }
 
 bool list_end(list_obj_t *list)
 {
     bool ret = true;
-    if (list->class_p->vtable->end)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->end)
     {
-        ret = list->class_p->vtable->end(list);
+        ret = vtable->end(list);
     }
     return ret;
 }
@@ -146,54 +165,11 @@ bool list_end(list_obj_t *list)
 list_node_t *list_current(list_obj_t *list)
 {
     list_node_t *ret = NULL;
-    if (list->class_p->vtable->current)
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->current)
     {
-        ret = list->class_p->vtable->current(list);
+        ret = vtable->current(list);
     }
     return ret;
-}
-
-/*-----------------
- * static function
- *----------------*/
-
-static void list_obj_construct(list_obj_t *obj, list_construct_args_t *args)
-{
-    const list_obj_class_t *original_class_p = obj->class_p;
-
-    if (obj->class_p->base_class)
-    {
-        /*Don't let the descendant methods run during constructing the ancestor type*/
-        obj->class_p = obj->class_p->base_class;
-
-        /*Construct the base first*/
-        list_obj_construct(obj, args);
-    }
-
-    /*Restore the original class*/
-    obj->class_p = original_class_p;
-    obj->item_size = *(args->item_size);
-    obj->list_length = 0;
-
-    if (obj->class_p->constructor_cb)
-    {
-        obj->class_p->constructor_cb(obj, args);
-    }
-}
-
-static void list_obj_destruct(list_obj_t *obj)
-{
-    if (obj->class_p->destructor_cb)
-    {
-        obj->class_p->destructor_cb(obj);
-    }
-
-    if (obj->class_p->base_class)
-    {
-        /*Don't let the descendant methods run during destructing the ancestor type*/
-        obj->class_p = obj->class_p->base_class;
-
-        /*Call the base class's destructor too*/
-        list_obj_destruct(obj);
-    }
 }

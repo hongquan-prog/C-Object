@@ -11,7 +11,8 @@ typedef struct _link_list_node_t
 
 typedef struct _link_list_obj_t
 {
-    list_obj_t obj;
+    list_obj_t base;
+
     link_list_node_t head;
     link_list_node_t *current;
 } link_list_obj_t;
