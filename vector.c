@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-static void vector_construct(list_obj_t *obj, list_construct_args_t *args);
-static void vector_destruct(list_obj_t *obj);
+extern const obj_class_t g_list_class;
+static void vector_constructor(obj_t *obj, obj_constructor_args_t *args);
+static void vector_destructor(obj_t *obj);
 
 const static list_vtable_t s_vector_vtable = {
     .insert = vector_insert,
@@ -18,25 +19,26 @@ const static list_vtable_t s_vector_vtable = {
     .pre = NULL,
     .current = vector_current };
 
-const list_obj_class_t g_vector_class = {
-    .vtable = &s_vector_vtable,
-    .constructor_cb = vector_construct,
-    .destructor_cb = vector_destruct,
+const obj_class_t g_vector_class = {
+    .base_class = &g_list_class,
+    .vtable = (obj_vtable_t *)&s_vector_vtable,
+    .constructor_cb = vector_constructor,
+    .destructor_cb = vector_destructor,
     .instance_size = sizeof(vector_obj_t),
-    .type_name = "vector" };
+    .class_name = "vector" };
 
 list_obj_t *vector_create(int item_size, int capacity)
 {
     list_obj_t *obj = NULL;
-    vector_construct_args_t args = { 0 };
+    vector_constructor_args_t args = { 0 };
 
     if ((capacity > 0) && (item_size > 0))
     {
         /* pass args */
-        args.item_size = &item_size;
+        args.list_args.item_size = &item_size;
         args.array_capacity = &capacity;
         /* allocate memory and init data */
-        obj = list_obj_class_create_obj(&g_vector_class, (list_construct_args_t *)&args);
+        obj = (list_obj_t *)obj_class_create_obj(&g_vector_class, (obj_constructor_args_t *)&args);
     }
 
     return obj;
@@ -181,15 +183,16 @@ list_node_t *vector_current(list_obj_t *obj)
     return (obj) ? (((vector_obj_t *)obj)->current) : (NULL);
 }
 
-static void vector_construct(list_obj_t *obj, list_construct_args_t *args)
+static void vector_constructor(obj_t *obj, obj_constructor_args_t *args)
 {
-    vector_construct_args_t *vector_args = (vector_construct_args_t *)args;
-    
+    vector_constructor_args_t *vector_args = (vector_constructor_args_t *)args;
+    list_obj_t *list = (list_obj_t *)obj;
+
     if (obj)
     {
         vector_obj_t *ret = (vector_obj_t *)obj;
         ret->array_capacity = *(vector_args->array_capacity);
-        ret->array = malloc(obj->item_size * ret->array_capacity);
+        ret->array = malloc(list->item_size * ret->array_capacity);
 
         if (ret->array)
         {
@@ -203,7 +206,7 @@ static void vector_construct(list_obj_t *obj, list_construct_args_t *args)
     }
 }
 
-static void vector_destruct(list_obj_t *obj)
+static void vector_destructor(obj_t *obj)
 {
     vector_obj_t *list = (vector_obj_t *)obj;
 

@@ -14,7 +14,7 @@ void function_test(list_obj_t *list)
 {
     int i = 0;
 
-    printf("type: %s\r\n", list->class_p->type_name);
+    printf("type: %s\r\n", OBJECT_NAME(list));
 
     /* insert */
     for (i = 0; i < MAX_LEN; i++)
@@ -55,7 +55,7 @@ void function_test(list_obj_t *list)
     }
     printf("\n");
 
-    if (strcmp(list->class_p->type_name, "dual circle list") == 0)
+    if (strcmp(OBJECT_NAME(list), "dual circle list") == 0)
     {
         /* pop front */
         printf("pop front: ");

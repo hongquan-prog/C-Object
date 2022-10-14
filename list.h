@@ -1,11 +1,17 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "err.h"
+#include "object.h"
 
 typedef void list_node_t;
-struct _list_obj_t;
-typedef struct _list_obj_t list_obj_t;
+
+typedef struct _list_obj_t
+{
+    obj_t base;
+
+    int item_size;
+    int list_length;
+} list_obj_t;
 
 typedef struct _list_vtable_t
 {
@@ -25,28 +31,9 @@ typedef struct _list_vtable_t
 typedef struct
 {
     int *item_size;
-} list_construct_args_t;
+} list_constructor_args_t;
 
-typedef struct _list_obj_class_t
-{
-    const struct _list_vtable_t *vtable;
-    const struct _list_obj_class_t *base_class;
-    void (*constructor_cb)(list_obj_t *class_p, list_construct_args_t *args);
-    void (*destructor_cb)(list_obj_t *class_p);
-    int instance_size;
-    const char *type_name;
-} list_obj_class_t;
-
-struct _list_obj_t
-{
-    const list_obj_class_t *class_p;
-    int item_size;
-    int list_length;
-};
-
-list_obj_t *list_obj_class_create_obj(const list_obj_class_t *class_p, list_construct_args_t *args);
-
-list_obj_t *list_delete(list_obj_t *obj);
+void list_delete(list_obj_t *obj);
 void list_insert(list_obj_t *obj, int i, const list_node_t *node);
 void list_remove(list_obj_t *obj, int i);
 bool list_get(list_obj_t *obj, int i, list_node_t *node);

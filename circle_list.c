@@ -2,7 +2,9 @@
 #include <stdlib.h>
 
 static void last_to_first(list_obj_t *obj);
-extern const list_obj_class_t g_link_list_class;
+static void circle_list_destructor(obj_t *obj);
+
+extern const obj_class_t g_link_list_class;
 extern link_list_node_t *link_list_position(link_list_obj_t *obj, int position);
 
 static list_vtable_t s_circle_list_vtable = {
@@ -18,23 +20,25 @@ static list_vtable_t s_circle_list_vtable = {
         .pre = NULL,
         .current = link_list_current};
 
-const list_obj_class_t g_circle_list_class = {
-    .vtable = &s_circle_list_vtable,
+const obj_class_t g_circle_list_class = {
+    .vtable = (obj_vtable_t *)&s_circle_list_vtable,
     .base_class = &g_link_list_class,
-    .instance_size = sizeof(link_list_obj_t),
-    .type_name = "circle list"};
+    .constructor_cb = NULL,
+    .destructor_cb = circle_list_destructor,
+    .instance_size = sizeof(circle_list_obj_t),
+    .class_name = "circle list"};
 
 list_obj_t *circle_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
-    list_construct_args_t args = { 0 };
+    list_constructor_args_t args = { 0 };
 
     if (item_size > 0)
     {
         /* pass args */
         args.item_size = &item_size;
         /* allocate memory and init data */
-        obj = list_obj_class_create_obj(&g_circle_list_class, &args);
+        obj = (list_obj_t *)obj_class_create_obj(&g_circle_list_class, (obj_constructor_args_t *)&args);
     }
 
     return obj;
@@ -43,8 +47,7 @@ list_obj_t *circle_list_create(int item_size)
 bool circle_list_insert(list_obj_t *obj, int i, const list_node_t *node)
 {
     bool ret = true;
-    link_list_obj_t *list = (link_list_obj_t *)obj;
-
+    
     i = (i % (obj->list_length + 1));
     ret = link_list_insert(obj, i, node);
 
@@ -85,8 +88,6 @@ void circle_list_remove(list_obj_t *obj, int i)
 
 bool circle_list_get(list_obj_t *obj, int i, list_node_t *node)
 {
-    link_list_obj_t *list = (link_list_obj_t *)obj;
-
     i = (i % obj->list_length);
     
     return link_list_get(obj, i, node);
@@ -94,8 +95,6 @@ bool circle_list_get(list_obj_t *obj, int i, list_node_t *node)
 
 bool circle_list_set(list_obj_t *obj, int i, const list_node_t *node)
 {
-    link_list_obj_t *list = (link_list_obj_t *)obj;
-
     i = (i % obj->list_length);
     
     return link_list_set(obj, i, node);
@@ -104,10 +103,11 @@ bool circle_list_set(list_obj_t *obj, int i, const list_node_t *node)
 bool circle_list_end(list_obj_t *obj)
 {
     bool ret = false;
+    link_list_obj_t *list = (link_list_obj_t *)obj;
 
     if (obj)
     {
-        link_list_obj_t *list = (link_list_obj_t *)obj;
+        
 
         ret = (list->current == NULL || obj->list_length == 0);
     }
@@ -122,5 +122,15 @@ static void last_to_first(list_obj_t *obj)
     if (ret)
     {
         ret->next->next = list->head.next;
+    }
+}
+
+static void circle_list_destructor(obj_t *obj)
+{
+    list_obj_t *list = (list_obj_t *)obj;
+    
+    while (list->list_length)
+    {
+        circle_list_remove(list, 0);
     }
 }

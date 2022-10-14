@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-static void dual_link_list_construct(list_obj_t *obj, list_construct_args_t *args);
-static void dual_link_list_destruct(list_obj_t *obj);
+extern const obj_class_t g_list_class;
+static void dual_link_list_constructor(obj_t *obj, obj_constructor_args_t *args);
+static void dual_link_list_destructor(obj_t *obj);
 
 const static list_vtable_t s_dual_link_list_vtable = {
     .insert = dual_link_list_insert,
@@ -18,24 +19,25 @@ const static list_vtable_t s_dual_link_list_vtable = {
     .pre = dual_link_list_pre,
     .current = dual_link_list_current};
 
-const list_obj_class_t g_dual_link_list_class = {
-    .vtable = &s_dual_link_list_vtable,
-    .constructor_cb = dual_link_list_construct,
-    .destructor_cb = dual_link_list_destruct,
+const obj_class_t g_dual_link_list_class = {
+    .vtable = (obj_vtable_t *)&s_dual_link_list_vtable,
+    .base_class = (obj_class_t *)&g_list_class,
+    .constructor_cb = dual_link_list_constructor,
+    .destructor_cb = dual_link_list_destructor,
     .instance_size = sizeof(dual_link_list_obj_t),
-    .type_name = "dual link list"};
+    .class_name = "dual link list"};
 
 list_obj_t *dual_link_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
-    list_construct_args_t args = { 0 };
+    list_constructor_args_t args = { 0 };
 
     if (item_size > 0)
     {
         /* pass args */
         args.item_size = &item_size;
         /* allocate memory and init data */
-        obj = list_obj_class_create_obj(&g_dual_link_list_class, &args);
+        obj = (list_obj_t *)obj_class_create_obj(&g_dual_link_list_class, (obj_constructor_args_t *)&args);
     }
 
     return obj;
@@ -100,8 +102,6 @@ bool dual_link_list_insert(list_obj_t *obj, int i, const list_node_t *node)
 
 void dual_link_list_remove(list_obj_t *obj, int i)
 {
-    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
-
     if (obj && (i >= 0) && (i < obj->list_length))
     {
         dual_link_list_node_t *current = dual_link_list_position(obj, i);
@@ -151,8 +151,6 @@ int dual_link_list_find(list_obj_t *obj, const list_node_t *node)
 bool dual_link_list_get(list_obj_t *obj, int i, list_node_t *node)
 {
     bool ret = true;
-    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
-
     if (obj && (i >= 0) && (i < obj->list_length) && node)
     {
         dual_link_list_node_t *current = dual_link_list_position(obj, i);
@@ -169,7 +167,6 @@ bool dual_link_list_get(list_obj_t *obj, int i, list_node_t *node)
 bool dual_link_list_set(list_obj_t *obj, int i, const list_node_t *node)
 {
     bool ret = true;
-    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
 
     if (obj && (i >= 0) && (i < obj->list_length) && node)
     {
@@ -234,7 +231,7 @@ list_node_t *dual_link_list_current(list_obj_t *obj)
     return (obj) ? (list->current->user_data) : (NULL);
 }
 
-static void dual_link_list_construct(list_obj_t *obj, list_construct_args_t *args)
+static void dual_link_list_constructor(obj_t *obj, obj_constructor_args_t *args)
 {
     if (obj)
     {
@@ -247,10 +244,12 @@ static void dual_link_list_construct(list_obj_t *obj, list_construct_args_t *arg
     }
 }
 
-static void dual_link_list_destruct(list_obj_t *obj)
+static void dual_link_list_destructor(obj_t *obj)
 {
-    while (obj->list_length)
+    list_obj_t *list = (list_obj_t *)obj;
+    
+    while (list->list_length)
     {
-        dual_link_list_remove(obj, 0);
+        dual_link_list_remove(list, 0);
     }
 }

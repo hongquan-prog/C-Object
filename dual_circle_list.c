@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-static void dual_circle_list_destruct(list_obj_t *obj);
-extern const list_obj_class_t g_dual_link_list_class;
+extern const obj_class_t g_dual_link_list_class;
+static void dual_circle_list_destructor(obj_t *obj);
+extern const obj_class_t g_dual_link_list_class;
 
 static list_vtable_t s_dual_circle_list_vtable = {
     .insert = dual_circle_list_insert,
@@ -18,23 +19,25 @@ static list_vtable_t s_dual_circle_list_vtable = {
     .pre = dual_link_list_pre,
     .current = dual_link_list_current};
 
-const list_obj_class_t g_dual_circle_list_class = {
-    .vtable = &s_dual_circle_list_vtable,
-    .destructor_cb = dual_circle_list_destruct,
+const obj_class_t g_dual_circle_list_class = {
+    .vtable = (obj_vtable_t *)&s_dual_circle_list_vtable,
+    .base_class = (obj_class_t *)&g_dual_link_list_class,
+    .constructor_cb = NULL,
+    .destructor_cb = dual_circle_list_destructor,
     .instance_size = sizeof(dual_link_list_obj_t),
-    .type_name = "dual circle list"};
+    .class_name = "dual circle list"};
 
 list_obj_t *dual_circle_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
-    list_construct_args_t args = { 0 };
+    list_constructor_args_t args = { 0 };
 
     if (item_size > 0)
     {
         /* pass args */
         args.item_size = &item_size;
         /* allocate memory and init data */
-        obj = list_obj_class_create_obj(&g_dual_circle_list_class, &args);
+        obj = (list_obj_t *)obj_class_create_obj(&g_dual_circle_list_class, (obj_constructor_args_t *)&args);
     }
 
     return obj;
@@ -78,11 +81,10 @@ static void dual_circle_list_add(dual_link_list_node_t *node,
 bool dual_circle_list_get(list_obj_t *obj, int i, list_node_t *node)
 {
     bool ret = true;
-    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
     
     i = (i % obj->list_length);
 
-    if (list && node)
+    if (obj && node)
     {
         dual_link_list_node_t *current = dual_circle_list_position(obj, i);
         memcpy(node, current->next->user_data, obj->item_size);
@@ -98,11 +100,10 @@ bool dual_circle_list_get(list_obj_t *obj, int i, list_node_t *node)
 bool dual_circle_list_set(list_obj_t *obj, int i, const list_node_t *node)
 {
     bool ret = true;
-    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
     
     i = (i % obj->list_length);
 
-    if (list && node)
+    if (obj && node)
     {
         dual_link_list_node_t *current = dual_circle_list_position(obj, i);
         memcpy(current->next->user_data, node, obj->item_size);
@@ -239,8 +240,6 @@ bool dual_circle_list_insert(list_obj_t *obj, int i, const list_node_t * node)
 
 void dual_circle_list_remove(list_obj_t *obj, int i)
 {
-    dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
-
     if (obj && (i >= 0) && (i < obj->list_length))
     {
         dual_link_list_node_t *current = dual_circle_list_position(obj, i);
@@ -273,10 +272,12 @@ bool dual_circle_list_end(list_obj_t *obj)
     return ret;
 }
 
-static void dual_circle_list_destruct(list_obj_t *obj)
+static void dual_circle_list_destructor(obj_t *obj)
 {
-    while (obj->list_length)
+    list_obj_t *list = (list_obj_t *)obj;
+    
+    while (list->list_length)
     {
-        dual_circle_list_remove(obj, 0);
+        dual_circle_list_remove(list, 0);
     }
 }
