@@ -4,7 +4,6 @@
 
 extern const obj_class_t g_dual_link_list_class;
 static void dual_circle_list_destructor(obj_t *obj);
-extern const obj_class_t g_dual_link_list_class;
 
 static list_vtable_t s_dual_circle_list_vtable = {
     .insert = dual_circle_list_insert,
@@ -21,7 +20,7 @@ static list_vtable_t s_dual_circle_list_vtable = {
 
 const obj_class_t g_dual_circle_list_class = {
     .vtable = (obj_vtable_t *)&s_dual_circle_list_vtable,
-    .base_class = (obj_class_t *)&g_dual_link_list_class,
+    .base_class = &g_dual_link_list_class,
     .constructor_cb = NULL,
     .destructor_cb = dual_circle_list_destructor,
     .instance_size = sizeof(dual_link_list_obj_t),

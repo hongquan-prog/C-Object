@@ -4,13 +4,14 @@
 #include "circle_list.h"
 #include "dual_link_list.h"
 #include "dual_circle_list.h"
+#include "static_queue.h"
 #include <unistd.h>
 #include <string.h>
 
 #define MAX_LEN 10
-static int array[MAX_LEN] = {0};
+static int array[MAX_LEN] = { 0 };
 
-void function_test(list_obj_t *list)
+void list_test(list_obj_t *list)
 {
     int i = 0;
 
@@ -106,28 +107,59 @@ void function_test(list_obj_t *list)
     }
 }
 
+void queue_test(queue_obj_t *obj)
+{
+    int i = 0;
 
-int main()
+    printf("type: %s\r\n", OBJECT_NAME(obj));
+
+    /* add */
+    printf("add: ");
+    for (i = 0; i < MAX_LEN; i++)
+    {
+        queue_add(obj, &i);
+        printf("%d ", i);
+    }
+    printf("\r\n");
+
+    /* remove */
+    printf("remove: ");
+    while (queue_length(obj))
+    {
+        int temp = 0;
+        queue_front(obj, &temp);
+        printf("%d ", temp);
+        queue_remove(obj);
+    }
+    printf("\r\n");
+}
+
+int main( )
 {
     list_obj_t *list = NULL;
-    
+    queue_obj_t *queue = NULL;
+
     list = vector_create(sizeof(int), MAX_LEN);
-    function_test(list);
+    list_test(list);
     list_delete(list);
 
     list = link_list_create(sizeof(int));
-    function_test(list);
+    list_test(list);
     list_delete(list);
 
     list = circle_list_create(sizeof(int));
-    function_test(list);
+    list_test(list);
     list_delete(list);
 
     list = dual_link_list_create(sizeof(int));
-    function_test(list);
+    list_test(list);
     list_delete(list);
 
     list = dual_circle_list_create(sizeof(int));
-    function_test(list);
+    list_test(list);
     list_delete(list);
+
+    queue = static_queue_create(sizeof(int), MAX_LEN);
+    queue_test(queue);
+    queue_delete(queue);
 }

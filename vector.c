@@ -39,6 +39,12 @@ list_obj_t *vector_create(int item_size, int capacity)
         args.array_capacity = &capacity;
         /* allocate memory and init data */
         obj = (list_obj_t *)obj_class_create_obj(&g_vector_class, (obj_constructor_args_t *)&args);
+
+        if (obj && (NULL == ((vector_obj_t *)obj)->array))
+        {
+            obj_class_delete_obj((obj_t *)obj);
+            obj = NULL;
+        }
     }
 
     return obj;
@@ -193,16 +199,7 @@ static void vector_constructor(obj_t *obj, obj_constructor_args_t *args)
         vector_obj_t *ret = (vector_obj_t *)obj;
         ret->array_capacity = *(vector_args->array_capacity);
         ret->array = malloc(list->item_size * ret->array_capacity);
-
-        if (ret->array)
-        {
-            ret->current = NULL;
-        }
-        else
-        {
-            free(obj);
-            obj = NULL;
-        }
+        ret->current = NULL;
     }
 }
 

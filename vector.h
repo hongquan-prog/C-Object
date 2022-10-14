@@ -6,8 +6,7 @@
 typedef struct
 {
     list_constructor_args_t list_args;
-    
-    void (*item_echo)(void *item);
+
     int *array_capacity;
 } vector_constructor_args_t;
 

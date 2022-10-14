@@ -21,7 +21,7 @@ const static list_vtable_t s_link_list_vtable = {
 
 const obj_class_t g_link_list_class = {
     .vtable = (obj_vtable_t *)&s_link_list_vtable,
-    .base_class = (obj_class_t *)&g_list_class,
+    .base_class = &g_list_class,
     .constructor_cb = link_list_constructor,
     .destructor_cb = link_list_destructor,
     .instance_size = sizeof(link_list_obj_t),
