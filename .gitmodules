@@ -1,0 +1,3 @@
+[submodule "error/ErrorGenerator"]
+	path = error/ErrorGenerator
+	url = https://github.com/hongquan-prog/ErrorGenerator.git
