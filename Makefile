@@ -5,8 +5,8 @@ all: build
 	cmake --build build/release
 
 build:
-	cmake -G Ninja -S . -B build/debug -DCMAKE_BUILD_TYPE=DEBUG
-	cmake -G Ninja -S . -B build/release -DCMAKE_BUILD_TYPE=RELEASE
+	cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=DEBUG
+	cmake -S . -B build/release -DCMAKE_BUILD_TYPE=RELEASE
 
 clean:
 	rm -r build
