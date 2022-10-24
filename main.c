@@ -6,6 +6,8 @@
 #include "dual_circle_list.h"
 #include "static_queue.h"
 #include "link_queue.h"
+#include "static_stack.h"
+#include "link_stack.h"
 #include <unistd.h>
 #include <string.h>
 
@@ -133,12 +135,62 @@ void queue_test(queue_obj_t *obj)
         queue_remove(obj);
     }
     printf("\r\n");
+
+    printf("add and remove: ");
+    for(i = 0; i < 20; i++)
+    {
+        int temp = 0;
+        queue_add(obj, &i);
+        queue_front(obj, &temp);
+        queue_remove(obj);
+        printf("%d ", temp);
+    }
+    printf("\r\n");
+}
+
+void stack_test(stack_obj_t *obj)
+{
+    int i = 0;
+
+    printf("type: %s\r\n", OBJECT_NAME(obj));
+
+    /* push */
+    printf("push: ");
+    for (i = 0; i < MAX_LEN; i++)
+    {
+        stack_push(obj, &i);
+        printf("%d ", i);
+    }
+    printf("\r\n");
+
+    /* pop */
+    printf("pop: ");
+    while (stack_size(obj))
+    {
+        int temp = 0;
+        stack_top(obj, &temp);
+        printf("%d ", temp);
+        stack_pop(obj);
+    }
+    printf("\r\n");
+
+    printf("push and pop: ");
+    for(i = 0; i < 20; i++)
+    {
+        int temp = 0;
+        stack_push(obj, &i);
+        stack_top(obj, &temp);
+        stack_pop(obj);
+        printf("%d ", temp);
+    }
+    printf("\r\n");
 }
 
 int main( )
 {
     list_obj_t *list = NULL;
     queue_obj_t *queue = NULL;
+    stack_obj_t *stack = NULL;
 
     list = vector_create(sizeof(int), MAX_LEN);
     list_test(list);
@@ -167,4 +219,12 @@ int main( )
     queue = link_queue_create(sizeof(int));
     queue_test(queue);
     queue_delete(queue);
+
+    stack = static_stack_create(sizeof(int), MAX_LEN);
+    stack_test(stack);
+    stack_delete(stack);
+
+    stack = link_stack_create(sizeof(int));
+    stack_test(stack);
+    stack_delete(stack);
 }

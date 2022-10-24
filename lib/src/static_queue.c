@@ -50,7 +50,7 @@ bool static_queue_add(queue_obj_t *obj, const queue_item_t *node)
     
     if (obj->queue_length < queue->queue_capacity)
     {
-        char *dest = queue->array + (obj->item_size * obj->queue_length);
+        char *dest = queue->array + (obj->item_size * queue->rear);
 
         memcpy(dest, node, obj->item_size);
         queue->rear = (queue->rear + 1) % queue->queue_capacity;
