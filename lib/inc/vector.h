@@ -26,6 +26,7 @@ void vector_remove(list_obj_t *obj, int i);
 int vector_find(list_obj_t *obj, const list_node_t *node);
 bool vector_get(list_obj_t *obj, int i, list_node_t *node);
 bool vector_set(list_obj_t *obj, int i, const list_node_t *node);
+void vector_clear(list_obj_t *obj);
 int vector_length(list_obj_t *obj);
 
 void vector_begin(list_obj_t *obj);

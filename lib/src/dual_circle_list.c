@@ -11,6 +11,7 @@ static list_vtable_t s_dual_circle_list_vtable = {
     .find = dual_link_list_find,
     .get = dual_circle_list_get,
     .set = dual_circle_list_set,
+    .clear = dual_circle_list_clear,
     .length = NULL,
     .begin = dual_link_list_begin,
     .end = dual_circle_list_end,
@@ -113,6 +114,14 @@ bool dual_circle_list_set(list_obj_t *obj, int i, const list_node_t *node)
     }
 
     return ret;
+}
+
+void dual_circle_list_clear(list_obj_t *obj)
+{   
+    while (obj->list_length)
+    {
+        dual_circle_list_remove(obj, 0);
+    }
 }
 
 bool dual_circle_list_push_back(list_obj_t *obj, list_node_t *node)
@@ -266,17 +275,12 @@ bool dual_circle_list_end(list_obj_t *obj)
 
     if (list)
     {
-        ret = (list->current == NULL || obj->list_length == 0);
+        ret = ((NULL == list->current) || (0 == obj->list_length));
     }
     return ret;
 }
 
 static void dual_circle_list_destructor(obj_t *obj)
 {
-    list_obj_t *list = (list_obj_t *)obj;
-    
-    while (list->list_length)
-    {
-        dual_circle_list_remove(list, 0);
-    }
+    dual_circle_list_clear((list_obj_t *)obj);
 }

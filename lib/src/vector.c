@@ -12,6 +12,7 @@ const static list_vtable_t s_vector_vtable = {
     .find = vector_find,
     .get = vector_get,
     .set = vector_set,
+    .clear = vector_clear,
     .length = NULL,
     .begin = vector_begin,
     .end = vector_end,
@@ -109,7 +110,7 @@ int vector_find(list_obj_t *obj, const list_node_t *node)
     {
         for (int i = 0; i < obj->list_length; i++)
         {
-            if (memcmp(list->array + obj->item_size * i, node, obj->item_size) == 0)
+            if (0 == memcmp(list->array + obj->item_size * i, node, obj->item_size))
             {
                 ret = i;
                 break;
@@ -149,6 +150,13 @@ bool vector_set(list_obj_t *obj, int i, const list_node_t *node)
         ret = false;
     }
     return ret;
+}
+
+void vector_clear(list_obj_t *obj)
+{
+    vector_obj_t *list = (vector_obj_t *)obj;
+
+    obj->list_length = 0;
 }
 
 void vector_begin(list_obj_t *obj)

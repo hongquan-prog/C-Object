@@ -13,6 +13,7 @@ static list_vtable_t s_circle_list_vtable = {
         .find = link_list_find,
         .get = circle_list_get,
         .set = circle_list_set,
+        .clear = circle_list_clear,
         .length = NULL,
         .begin = link_list_begin,
         .end = circle_list_end,
@@ -51,7 +52,7 @@ bool circle_list_insert(list_obj_t *obj, int i, const list_node_t *node)
     i = (i % (obj->list_length + 1));
     ret = link_list_insert(obj, i, node);
 
-    if (ret && (i == 0))
+    if (ret && (0 == i))
     {
         last_to_first(obj);
     }
@@ -65,7 +66,7 @@ void circle_list_remove(list_obj_t *obj, int i)
 
     i = (i % obj->list_length);
 
-    if (i == 0)
+    if (0 == i)
     {
         link_list_node_t *toDel = list->head.next;
 
@@ -100,6 +101,14 @@ bool circle_list_set(list_obj_t *obj, int i, const list_node_t *node)
     return link_list_set(obj, i, node);
 }
 
+void circle_list_clear(list_obj_t *obj)
+{
+    while (obj->list_length)
+    {
+        circle_list_remove(obj, 0);
+    }
+}
+
 bool circle_list_end(list_obj_t *obj)
 {
     bool ret = false;
@@ -109,7 +118,7 @@ bool circle_list_end(list_obj_t *obj)
     {
         
 
-        ret = (list->current == NULL || obj->list_length == 0);
+        ret = ((NULL == list->current) || (0 == obj->list_length));
     }
     return ret;
 }
@@ -128,9 +137,6 @@ static void last_to_first(list_obj_t *obj)
 static void circle_list_destructor(obj_t *obj)
 {
     list_obj_t *list = (list_obj_t *)obj;
-    
-    while (list->list_length)
-    {
-        circle_list_remove(list, 0);
-    }
+
+    circle_list_clear(list);
 }

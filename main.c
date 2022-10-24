@@ -5,6 +5,7 @@
 #include "dual_link_list.h"
 #include "dual_circle_list.h"
 #include "static_queue.h"
+#include "link_queue.h"
 #include <unistd.h>
 #include <string.h>
 
@@ -56,7 +57,7 @@ void list_test(list_obj_t *list)
     }
     printf("\n");
 
-    if (strcmp(OBJECT_NAME(list), "dual circle list") == 0)
+    if (0 == strcmp(OBJECT_NAME(list), "dual circle list"))
     {
         /* pop front */
         printf("pop front: ");
@@ -160,6 +161,10 @@ int main( )
     list_delete(list);
 
     queue = static_queue_create(sizeof(int), MAX_LEN);
+    queue_test(queue);
+    queue_delete(queue);
+
+    queue = link_queue_create(sizeof(int));
     queue_test(queue);
     queue_delete(queue);
 }

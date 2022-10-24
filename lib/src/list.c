@@ -32,17 +32,18 @@ void list_delete(list_obj_t *obj)
     obj_class_delete_obj((obj_t *)obj);
 }
 
-void list_insert(list_obj_t *list, int i, const list_node_t *node)
+bool list_insert(list_obj_t *list, int i, const list_node_t *node)
 {
     list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
     
     if (vtable->insert)
     {
-        vtable->insert(list, i, node);
+        return vtable->insert(list, i, node);
     }
     else
     {
         LOG(ERR_CONSTRUCT(NullPointer), "insert function not exist in vtable");
+        return false;
     }
 }
 
@@ -62,7 +63,6 @@ void list_remove(list_obj_t *list, int i)
 
 bool list_get(list_obj_t *list, int i, list_node_t *node)
 {
-    bool ret = false;
     list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
 
     if (vtable->get)
@@ -72,8 +72,8 @@ bool list_get(list_obj_t *list, int i, list_node_t *node)
     else
     {
         LOG(ERR_CONSTRUCT(NullPointer), "get function not exist in vtable");
+        return false;
     }
-    return ret;
 }
 
 bool list_set(list_obj_t *list, int i, const list_node_t *node)
@@ -88,6 +88,20 @@ bool list_set(list_obj_t *list, int i, const list_node_t *node)
     {
         LOG(ERR_CONSTRUCT(NullPointer), "set function not exist in vtable");
         return false;
+    }
+}
+
+void list_clear(list_obj_t *list)
+{
+    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    
+    if (vtable->clear)
+    {
+        vtable->clear(list);
+    }
+    else
+    {
+        LOG(ERR_CONSTRUCT(NullPointer), "clear function not exist in vtable");
     }
 }
 
@@ -128,6 +142,10 @@ void list_begin(list_obj_t *list)
     {
         vtable->begin(list);
     }
+    else
+    {
+        LOG(ERR_CONSTRUCT(NullPointer), "begin function not exist in vtable");
+    }
 }
 
 void list_next(list_obj_t *list)
@@ -137,6 +155,10 @@ void list_next(list_obj_t *list)
     if (vtable->next)
     {
         vtable->next(list);
+    }
+    else
+    {
+        LOG(ERR_CONSTRUCT(NullPointer), "next function not exist in vtable");
     }
 }
 
@@ -148,28 +170,38 @@ void list_pre(list_obj_t *list)
     {
         vtable->pre(list);
     }
+    else
+    {
+        LOG(ERR_CONSTRUCT(NullPointer), "pre function not exist in vtable");
+    }
 }
 
 bool list_end(list_obj_t *list)
 {
-    bool ret = true;
     list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
     
     if (vtable->end)
     {
-        ret = vtable->end(list);
+        return vtable->end(list);
     }
-    return ret;
+    else
+    {
+        LOG(ERR_CONSTRUCT(NullPointer), "end function not exist in vtable");
+        return true;
+    }
 }
 
 list_node_t *list_current(list_obj_t *list)
 {
-    list_node_t *ret = NULL;
     list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
     
     if (vtable->current)
     {
-        ret = vtable->current(list);
+        return vtable->current(list);
     }
-    return ret;
+    else
+    {
+        LOG(ERR_CONSTRUCT(NullPointer), "current function not exist in vtable");
+        return NULL;
+    }
 }

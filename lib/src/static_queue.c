@@ -6,7 +6,7 @@ extern const obj_class_t g_queue_class;
 static void static_queue_constructor(obj_t *obj, obj_constructor_args_t *args);
 static void static_queue_destructor(obj_t *obj);
 
-static const queue_vtable_t s_queue_vtable = {
+static const queue_vtable_t s_static_queue_vtable = {
     .add = static_queue_add,
     .remove = static_queue_remove,
     .front = static_queue_front,
@@ -14,7 +14,7 @@ static const queue_vtable_t s_queue_vtable = {
     .length = NULL };
 
 const obj_class_t g_static_queue_class = {
-    .vtable = &s_queue_vtable,
+    .vtable = &s_static_queue_vtable,
     .base_class = &g_queue_class,
     .constructor_cb = static_queue_constructor,
     .destructor_cb = static_queue_destructor,
@@ -33,7 +33,7 @@ queue_obj_t *static_queue_create(int item_size, int capacity)
 
         obj = (queue_obj_t *)obj_class_create_obj(&g_static_queue_class, (obj_constructor_args_t *)&args);
 
-        if (obj && (NULL == ((static_queue_obj_t *)obj)))
+        if ((NULL == obj) || (NULL == ((static_queue_obj_t *)obj)->array))
         {
             obj_class_delete_obj((obj_t *)obj);
             obj = NULL;

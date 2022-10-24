@@ -10,7 +10,7 @@ obj_t *obj_class_create_obj(const obj_class_t *class, obj_constructor_args_t *ar
     uint32_t s = class->instance_size;
     obj_t *obj = malloc(s);
 
-    if (obj == NULL)
+    if (NULL == obj)
     {
         return NULL;
     }

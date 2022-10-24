@@ -12,6 +12,7 @@ const static list_vtable_t s_dual_link_list_vtable = {
     .find = dual_link_list_find,
     .get = dual_link_list_get,
     .set = dual_link_list_set,
+    .clear = dual_link_list_clear,
     .length = NULL,
     .begin = dual_link_list_begin,
     .end = dual_link_list_end,
@@ -181,6 +182,16 @@ bool dual_link_list_set(list_obj_t *obj, int i, const list_node_t *node)
     return ret;
 }
 
+void dual_link_list_clear(list_obj_t *obj)
+{
+    list_obj_t *list = (list_obj_t *)obj;
+    
+    while (list->list_length)
+    {
+        dual_link_list_remove(list, 0);
+    }
+}
+
 void dual_link_list_begin(list_obj_t *obj)
 {
     dual_link_list_obj_t *list = (dual_link_list_obj_t *)obj;
@@ -218,7 +229,7 @@ bool dual_link_list_end(list_obj_t *obj)
 
     if (list)
     {
-        ret = (list->current == NULL);
+        ret = (NULL == list->current);
     }
 
     return ret;
@@ -246,10 +257,5 @@ static void dual_link_list_constructor(obj_t *obj, obj_constructor_args_t *args)
 
 static void dual_link_list_destructor(obj_t *obj)
 {
-    list_obj_t *list = (list_obj_t *)obj;
-    
-    while (list->list_length)
-    {
-        dual_link_list_remove(list, 0);
-    }
+    dual_link_list_clear((list_obj_t *)obj);
 }
