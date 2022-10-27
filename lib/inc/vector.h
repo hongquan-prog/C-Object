@@ -3,20 +3,26 @@
 
 #include "list.h"
 
+/*************************** vector_constructor_args_t ***********************************/
+
+#define VECTOR_CONSTRUCTOR_ARGS_MEMBER  LIST_CONSTRUCTOR_ARGS_MEMBER \
+                                        int *array_capacity;
+
 typedef struct
 {
-    list_constructor_args_t list_args;
-
-    int *array_capacity;
+    VECTOR_CONSTRUCTOR_ARGS_MEMBER
 } vector_constructor_args_t;
 
+/******************************** vector_obj_t *******************************************/
+
+#define VECTOR_OBJ_MEMBER               LIST_OBJ_MEMBER \
+                                        char *array; \
+                                        int array_capacity; \
+                                        list_node_t *current;
+
 typedef struct
 {
-    list_obj_t base;
-    
-    char *array;
-    int array_capacity;
-    list_node_t *current;
+    VECTOR_OBJ_MEMBER
 } vector_obj_t;
 
 list_obj_t *vector_create(int item_size, int length);

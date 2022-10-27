@@ -2,21 +2,27 @@
 
 #include "stack.h"
 
-typedef struct _static_stack_obj_t
-{
-    stack_obj_t base;
+/******************************* static_stack_constructor_args_t ******************************/
 
-    char *array;
-    int stack_capacity;
-    int top;
-} static_stack_obj_t;
-
+#define STATIC_STACK_CONSTRUCTOR_ARGS_MEMBER            STACK_CONSTRUCTOR_ARGS_MEMBER \
+                                                        int *stack_capacity;
 typedef struct
 {
-    stack_constructor_args_t stack_args;
-
-    int *stack_capacity;
+    STATIC_STACK_CONSTRUCTOR_ARGS_MEMBER
 } static_stack_constructor_args_t;
+
+/******************************* static_stack_obj_t ******************************/
+
+#define STATIC_STACK_OBJ_MEMBER                         STACK_OBJ_MEMBER \
+                                                        char *array; \
+                                                        int stack_capacity; \
+                                                        int top;
+typedef struct _static_stack_obj_t
+{
+    STATIC_STACK_OBJ_MEMBER
+} static_stack_obj_t;
+
+
 
 stack_obj_t *static_stack_create(int item_size, int capacity);
 

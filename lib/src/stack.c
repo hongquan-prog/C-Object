@@ -29,7 +29,7 @@ void stack_delete(stack_obj_t *obj)
 
 bool stack_push(stack_obj_t *obj, const stack_item_t *node)
 {
-    stack_vtable_t *vtable = (stack_vtable_t *)obj->base.class->vtable;
+    stack_vtable_t *vtable = (stack_vtable_t *)obj->class->vtable;
     
     if (vtable->push)
     {
@@ -44,7 +44,7 @@ bool stack_push(stack_obj_t *obj, const stack_item_t *node)
 
 void stack_pop(stack_obj_t *obj)
 {
-    stack_vtable_t *vtable = (stack_vtable_t *)obj->base.class->vtable;
+    stack_vtable_t *vtable = (stack_vtable_t *)obj->class->vtable;
     
     if (vtable->pop)
     {
@@ -58,7 +58,7 @@ void stack_pop(stack_obj_t *obj)
 
 bool stack_top(stack_obj_t *obj, stack_item_t *node)
 {
-    stack_vtable_t *vtable = (stack_vtable_t *)obj->base.class->vtable;
+    stack_vtable_t *vtable = (stack_vtable_t *)obj->class->vtable;
     
     if (vtable->top)
     {
@@ -74,7 +74,7 @@ bool stack_top(stack_obj_t *obj, stack_item_t *node)
 
 void stack_clear(stack_obj_t *obj)
 {
-    stack_vtable_t *vtable = (stack_vtable_t *)obj->base.class->vtable;
+    stack_vtable_t *vtable = (stack_vtable_t *)obj->class->vtable;
     
     if (vtable->clear)
     {
@@ -88,7 +88,7 @@ void stack_clear(stack_obj_t *obj)
 
 int stack_size(stack_obj_t *obj)
 {
-    stack_vtable_t *vtable = (stack_vtable_t *)obj->base.class->vtable;
+    stack_vtable_t *vtable = (stack_vtable_t *)obj->class->vtable;
     
     if (vtable->size)
     {

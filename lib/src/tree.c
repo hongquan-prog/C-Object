@@ -18,6 +18,8 @@ static void tree_constructor(obj_t *obj, obj_constructor_args_t *args)
     {
         tree_obj_t *ret = (tree_obj_t *)obj;
         ret->item_size = *(tree_args->item_size);
+        ret->equal = NULL;
+        ret->root = NULL;
     }
 }
 
@@ -26,13 +28,21 @@ void tree_delete(tree_obj_t *obj)
     obj_class_delete_obj((obj_t *)obj);
 }
 
-bool tree_insert_value(tree_obj_t *obj, const tree_value_t *value, int position)
+void tree_reload_equal(tree_obj_t *obj, equal_operator_t equal)
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    if (obj)
+    {
+        obj->equal = equal;
+    }
+}
+
+bool tree_insert_value(tree_obj_t *obj, const tree_value_t *value, const tree_node_t *parent)
+{
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->insert_value)
     {
-        return vtable->insert_value(obj, value, position);
+        return vtable->insert_value(obj, value, parent);
     }
     else
     {
@@ -43,7 +53,7 @@ bool tree_insert_value(tree_obj_t *obj, const tree_value_t *value, int position)
 
 bool tree_insert_node(tree_obj_t *obj, const tree_node_t *node)
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->insert_node)
     {
@@ -58,7 +68,7 @@ bool tree_insert_node(tree_obj_t *obj, const tree_node_t *node)
 
 void tree_remove(tree_obj_t *obj, int position)
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->remove)
     {
@@ -72,7 +82,7 @@ void tree_remove(tree_obj_t *obj, int position)
 
 int tree_find(tree_obj_t *obj, tree_value_t *value) 
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->find)
     {
@@ -87,7 +97,7 @@ int tree_find(tree_obj_t *obj, tree_value_t *value)
 
 int tree_degree(tree_obj_t *obj) 
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->degree)
     {
@@ -102,7 +112,7 @@ int tree_degree(tree_obj_t *obj)
 
 int tree_count(tree_obj_t *obj) 
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->count)
     {
@@ -117,7 +127,7 @@ int tree_count(tree_obj_t *obj)
 
 int tree_height(tree_obj_t *obj) 
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->height)
     {
@@ -132,7 +142,7 @@ int tree_height(tree_obj_t *obj)
 
 void tree_clear(tree_obj_t *obj) 
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->clear)
     {
@@ -146,7 +156,7 @@ void tree_clear(tree_obj_t *obj)
 
 void tree_begin(tree_obj_t *obj) 
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->begin)
     {
@@ -160,7 +170,7 @@ void tree_begin(tree_obj_t *obj)
 
 bool tree_end(tree_obj_t *obj) 
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->end)
     {
@@ -175,7 +185,7 @@ bool tree_end(tree_obj_t *obj)
 
 void tree_next(tree_obj_t *obj)
 {
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->base.class->vtable;
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->next)
     {

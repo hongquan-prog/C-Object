@@ -116,10 +116,9 @@ bool circle_list_end(list_obj_t *obj)
 
     if (obj)
     {
-        
-
         ret = ((NULL == list->current) || (0 == obj->list_length));
     }
+
     return ret;
 }
 

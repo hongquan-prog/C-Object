@@ -29,7 +29,7 @@ void queue_delete(queue_obj_t *obj)
 
 bool queue_add(queue_obj_t *obj, const queue_item_t *node)
 {
-    queue_vtable_t *vtable = (queue_vtable_t *)obj->base.class->vtable;
+    queue_vtable_t *vtable = (queue_vtable_t *)obj->class->vtable;
     
     if (vtable->add)
     {
@@ -45,7 +45,7 @@ bool queue_add(queue_obj_t *obj, const queue_item_t *node)
 
 void queue_remove(queue_obj_t *obj)
 {
-    queue_vtable_t *vtable = (queue_vtable_t *)obj->base.class->vtable;
+    queue_vtable_t *vtable = (queue_vtable_t *)obj->class->vtable;
     
     if (vtable->remove)
     {
@@ -59,7 +59,7 @@ void queue_remove(queue_obj_t *obj)
 
 bool queue_front(queue_obj_t *obj, queue_item_t *node)
 {
-    queue_vtable_t *vtable = (queue_vtable_t *)obj->base.class->vtable;
+    queue_vtable_t *vtable = (queue_vtable_t *)obj->class->vtable;
     
     if (vtable->front)
     {
@@ -75,7 +75,7 @@ bool queue_front(queue_obj_t *obj, queue_item_t *node)
 
 void queue_clear(queue_obj_t *obj)
 {
-    queue_vtable_t *vtable = (queue_vtable_t *)obj->base.class->vtable;
+    queue_vtable_t *vtable = (queue_vtable_t *)obj->class->vtable;
     
     if (vtable->clear)
     {
@@ -89,7 +89,7 @@ void queue_clear(queue_obj_t *obj)
 
 int queue_length(queue_obj_t *obj)
 {
-    queue_vtable_t *vtable = (queue_vtable_t *)obj->base.class->vtable;
+    queue_vtable_t *vtable = (queue_vtable_t *)obj->class->vtable;
     
     if (vtable->length)
     {

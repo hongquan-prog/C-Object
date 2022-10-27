@@ -6,14 +6,26 @@
 
 typedef void list_node_t;
 
+/******************************** list_constructor_args_t ******************************/
+
+#define LIST_CONSTRUCTOR_ARGS_MEMBER    int *item_size; \
+
+typedef struct
+{
+    LIST_CONSTRUCTOR_ARGS_MEMBER
+} list_constructor_args_t;
+
+/************************************** list_obj_t *************************************/
+
+#define LIST_OBJ_MEMBER                 OBJ_MEMBER \
+                                        /* euual operator function reload */ \
+                                        equal_operator_t equal; \
+                                        int item_size; \
+                                        int list_length;
+
 typedef struct _list_obj_t
 {
-    obj_t base;
-
-    /* euual operator function reload */
-    equal_operator_t equal;
-    int item_size;
-    int list_length;
+    LIST_OBJ_MEMBER
 } list_obj_t;
 
 typedef struct _list_vtable_t
@@ -31,11 +43,6 @@ typedef struct _list_vtable_t
     void (*pre)(list_obj_t *obj);
     list_node_t *(*current)(list_obj_t *obj);
 } list_vtable_t;
-
-typedef struct
-{
-    int *item_size;
-} list_constructor_args_t;
 
 void list_delete(list_obj_t *obj);
 void list_reload_eual(list_obj_t *obj, equal_operator_t equal);

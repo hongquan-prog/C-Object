@@ -28,7 +28,7 @@ stack_obj_t *static_stack_create(int item_size, int capacity)
     
     if ((item_size > 0) && (capacity > 0))
     {
-        args.stack_args.item_size = &item_size;
+        args.item_size = &item_size;
         args.stack_capacity = &capacity;
 
         obj = (stack_obj_t *)obj_class_create_obj(&g_static_stack_class, (obj_constructor_args_t *)&args);

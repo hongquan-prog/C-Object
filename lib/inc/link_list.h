@@ -9,12 +9,15 @@ typedef struct _link_list_node_t
     void *user_data;
 } link_list_node_t;
 
+/******************************** link_list_obj_t *******************************************/
+
+#define LINK_LIST_OBJ_MEMBER                    LIST_OBJ_MEMBER \
+                                                link_list_node_t head; \
+                                                link_list_node_t *current;
+
 typedef struct _link_list_obj_t
 {
-    list_obj_t base;
-
-    link_list_node_t head;
-    link_list_node_t *current;
+    LINK_LIST_OBJ_MEMBER
 } link_list_obj_t;
 
 

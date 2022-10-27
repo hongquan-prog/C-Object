@@ -4,18 +4,25 @@
 
 typedef void stack_item_t;
 
-typedef struct _stack_obj_t
-{
-    obj_t base;
 
-    int item_size;
-    int stack_size;
-} stack_obj_t;
+/********************************* stack_constructor_args_t ***************************************/
+
+#define STACK_CONSTRUCTOR_ARGS_MEMBER       int *item_size;
 
 typedef struct
 {
-    int *item_size;
+    STACK_CONSTRUCTOR_ARGS_MEMBER
 } stack_constructor_args_t;
+
+/************************************ stack_list_obj_t *******************************************/
+
+#define STACK_OBJ_MEMBER                    OBJ_MEMBER \
+                                            int item_size; \
+                                            int stack_size;
+typedef struct _stack_obj_t
+{
+    STACK_OBJ_MEMBER
+} stack_obj_t;
 
 typedef struct _stack_vtable_t
 {

@@ -43,7 +43,7 @@ void list_reload_eual(list_obj_t *obj, equal_operator_t equal)
 
 bool list_insert(list_obj_t *list, int i, const list_node_t *node)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->insert)
     {
@@ -58,7 +58,7 @@ bool list_insert(list_obj_t *list, int i, const list_node_t *node)
 
 void list_remove(list_obj_t *list, int i)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->remove)
     {
@@ -72,7 +72,7 @@ void list_remove(list_obj_t *list, int i)
 
 bool list_get(list_obj_t *list, int i, list_node_t *node)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
 
     if (vtable->get)
     {
@@ -87,7 +87,7 @@ bool list_get(list_obj_t *list, int i, list_node_t *node)
 
 bool list_set(list_obj_t *list, int i, const list_node_t *node)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->set)
     {
@@ -102,7 +102,7 @@ bool list_set(list_obj_t *list, int i, const list_node_t *node)
 
 void list_clear(list_obj_t *list)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->clear)
     {
@@ -116,7 +116,7 @@ void list_clear(list_obj_t *list)
 
 int list_length(list_obj_t *list)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->length)
     {
@@ -130,7 +130,7 @@ int list_length(list_obj_t *list)
 
 int list_find(list_obj_t *list, const list_node_t *node)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->find)
     {
@@ -145,7 +145,7 @@ int list_find(list_obj_t *list, const list_node_t *node)
 
 void list_begin(list_obj_t *list)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->begin)
     {
@@ -159,7 +159,7 @@ void list_begin(list_obj_t *list)
 
 void list_next(list_obj_t *list)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->next)
     {
@@ -173,7 +173,7 @@ void list_next(list_obj_t *list)
 
 void list_pre(list_obj_t *list)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->next)
     {
@@ -187,7 +187,7 @@ void list_pre(list_obj_t *list)
 
 bool list_end(list_obj_t *list)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->end)
     {
@@ -202,7 +202,7 @@ bool list_end(list_obj_t *list)
 
 list_node_t *list_current(list_obj_t *list)
 {
-    list_vtable_t *vtable = (list_vtable_t *)list->base.class->vtable;
+    list_vtable_t *vtable = (list_vtable_t *)list->class->vtable;
     
     if (vtable->current)
     {

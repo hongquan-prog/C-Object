@@ -36,7 +36,7 @@ list_obj_t *vector_create(int item_size, int capacity)
     if ((capacity > 0) && (item_size > 0))
     {
         /* pass args */
-        args.list_args.item_size = &item_size;
+        args.item_size = &item_size;
         args.array_capacity = &capacity;
         /* allocate memory and init data */
         obj = (list_obj_t *)obj_class_create_obj(&g_vector_class, (obj_constructor_args_t *)&args);
