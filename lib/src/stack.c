@@ -40,7 +40,6 @@ bool stack_push(stack_obj_t *obj, const stack_item_t *node)
         LOG(ERR_CONSTRUCT(NullPointer), "push function not exist in vtable");
         return false;
     }
-
 }
 
 void stack_pop(stack_obj_t *obj)

@@ -141,7 +141,15 @@ int link_list_find(list_obj_t *obj, const list_node_t *node)
         {
             current = current->next;
 
-            if (0 == memcmp(current->user_data, node, obj->item_size))
+            if (obj->equal)
+            {
+                if (obj->equal(current->user_data, node))
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            else if (0 == memcmp(current->user_data, node, obj->item_size))
             {
                 ret = i;
                 break;

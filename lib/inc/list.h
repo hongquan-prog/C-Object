@@ -2,6 +2,7 @@
 #define LIST_H
 
 #include "object.h"
+#include "operator.h"
 
 typedef void list_node_t;
 
@@ -9,6 +10,8 @@ typedef struct _list_obj_t
 {
     obj_t base;
 
+    /* euual operator function reload */
+    equal_operator_t equal;
     int item_size;
     int list_length;
 } list_obj_t;
@@ -35,6 +38,7 @@ typedef struct
 } list_constructor_args_t;
 
 void list_delete(list_obj_t *obj);
+void list_reload_eual(list_obj_t *obj, equal_operator_t equal);
 bool list_insert(list_obj_t *obj, int i, const list_node_t *node);
 void list_remove(list_obj_t *obj, int i);
 int list_find(list_obj_t *obj, const list_node_t *node);

@@ -110,7 +110,15 @@ int vector_find(list_obj_t *obj, const list_node_t *node)
     {
         for (int i = 0; i < obj->list_length; i++)
         {
-            if (0 == memcmp(list->array + obj->item_size * i, node, obj->item_size))
+            if (obj->equal)
+            {
+                if (obj->equal(list->array + obj->item_size * i, node))
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            else if (0 == memcmp(list->array + obj->item_size * i, node, obj->item_size))
             {
                 ret = i;
                 break;

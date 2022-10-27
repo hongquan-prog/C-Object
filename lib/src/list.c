@@ -19,6 +19,7 @@ static void list_constructor(obj_t *obj, obj_constructor_args_t *args)
     {
         list_obj_t *ret = (list_obj_t *)obj;
         ret->item_size = *(list_args->item_size);
+        ret->equal = NULL;
         ret->list_length = 0;
     }
 }
@@ -30,6 +31,14 @@ static void list_constructor(obj_t *obj, obj_constructor_args_t *args)
 void list_delete(list_obj_t *obj)
 {
     obj_class_delete_obj((obj_t *)obj);
+}
+
+void list_reload_eual(list_obj_t *obj, equal_operator_t equal)
+{
+    if(obj)
+    {
+        obj->equal = equal;
+    }
 }
 
 bool list_insert(list_obj_t *list, int i, const list_node_t *node)
