@@ -8,17 +8,18 @@
 #include "link_queue.h"
 #include "static_stack.h"
 #include "link_stack.h"
+#include "general_tree.h"
 #include <unistd.h>
 #include <string.h>
 
 #define MAX_LEN 10
-static int array[MAX_LEN] = { 0 };
+static int array[MAX_LEN] = {0};
 
 void list_test(list_obj_t *list)
 {
     int i = 0;
 
-    printf("type: %s\r\n", OBJECT_NAME(list));
+    printf("\r\ntype: %s\r\n", OBJECT_NAME(list));
 
     /* insert */
     for (i = 0; i < MAX_LEN; i++)
@@ -114,7 +115,7 @@ void queue_test(queue_obj_t *obj)
 {
     int i = 0;
 
-    printf("type: %s\r\n", OBJECT_NAME(obj));
+    printf("\r\ntype: %s\r\n", OBJECT_NAME(obj));
 
     /* add */
     printf("add: ");
@@ -137,7 +138,7 @@ void queue_test(queue_obj_t *obj)
     printf("\r\n");
 
     printf("add and remove: ");
-    for(i = 0; i < 20; i++)
+    for (i = 0; i < 20; i++)
     {
         int temp = 0;
         queue_add(obj, &i);
@@ -152,7 +153,7 @@ void stack_test(stack_obj_t *obj)
 {
     int i = 0;
 
-    printf("type: %s\r\n", OBJECT_NAME(obj));
+    printf("\r\ntype: %s\r\n", OBJECT_NAME(obj));
 
     /* push */
     printf("push: ");
@@ -175,7 +176,7 @@ void stack_test(stack_obj_t *obj)
     printf("\r\n");
 
     printf("push and pop: ");
-    for(i = 0; i < 20; i++)
+    for (i = 0; i < 20; i++)
     {
         int temp = 0;
         stack_push(obj, &i);
@@ -186,7 +187,78 @@ void stack_test(stack_obj_t *obj)
     printf("\r\n");
 }
 
-int main( )
+void tree_test(tree_obj_t *obj)
+{
+    int val = 0;
+    int find = 0;
+    /* insert
+     *         0
+     *   1           2
+     * 3   4      5  6  7
+     */
+    printf("\r\ntype: %s\r\n", OBJECT_NAME(obj));
+
+    printf("insert:\r\n         0\r\n   1           2\r\n 3   4      5  6  7\r\n");
+    tree_insert(obj, &val, NULL);
+    find = 0;
+    val = 1;
+    tree_insert(obj, &val, tree_find(obj, &find));
+    val = 2;
+    tree_insert(obj, &val, tree_find(obj, &find));
+
+    find = 1;
+    val = 3;
+    tree_insert(obj, &val, tree_find(obj, &find));
+    val = 4;
+    tree_insert(obj, &val, tree_find(obj, &find));
+
+    find = 2;
+    val = 5;
+    tree_insert(obj, &val, tree_find(obj, &find));
+    val = 6;
+    tree_insert(obj, &val, tree_find(obj, &find));
+    val = 7;
+    tree_insert(obj, &val, tree_find(obj, &find));
+
+    /* height */
+    printf("height: %d \r\n", tree_height(obj));
+
+    /* count */
+    printf("count: %d \r\n", tree_count(obj));
+
+    /* degree */
+    printf("degree: %d \r\n", tree_degree(obj));
+
+    /* traverse */
+    printf("traverse: ");
+    for (tree_begin(obj); !tree_end(obj); tree_next(obj))
+    {
+        printf("%d ", *((int *)tree_current(obj)));
+    }
+    printf("\r\n");
+
+    /* remove */
+    val = 2;
+    tree_remove(obj, &val);
+    printf("after 2 removed: \r\n     0\r\n   1\r\n 3   4\r\n");
+    printf("traverse: ");
+    for (tree_begin(obj); !tree_end(obj); tree_next(obj))
+    {
+        printf("%d ", *((int *)tree_current(obj)));
+    }
+    printf("\r\n");
+
+    /* height */
+    printf("height: %d \r\n", tree_height(obj));
+
+    /* count */
+    printf("count: %d \r\n", tree_count(obj));
+
+    /* degree */
+    printf("degree: %d \r\n", tree_degree(obj));
+}
+
+int main()
 {
     list_obj_t *list = NULL;
     queue_obj_t *queue = NULL;
@@ -227,4 +299,8 @@ int main( )
     stack = link_stack_create(sizeof(int));
     stack_test(stack);
     stack_delete(stack);
+
+    tree_obj_t *tree = general_tree_create(sizeof(int));
+    tree_test(tree);
+    tree_delete(tree);
 }

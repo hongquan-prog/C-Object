@@ -36,13 +36,13 @@ void tree_reload_equal(tree_obj_t *obj, equal_operator_t equal)
     }
 }
 
-bool tree_insert_value(tree_obj_t *obj, const tree_value_t *value, const tree_node_t *parent)
+bool tree_insert(tree_obj_t *obj, const tree_value_t *value, tree_node_t *parent)
 {
     tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
-    if (vtable->insert_value)
+    if (vtable->insert)
     {
-        return vtable->insert_value(obj, value, parent);
+        return vtable->insert(obj, value, parent);
     }
     else
     {
@@ -51,36 +51,22 @@ bool tree_insert_value(tree_obj_t *obj, const tree_value_t *value, const tree_no
     }
 }
 
-bool tree_insert_node(tree_obj_t *obj, const tree_node_t *node)
-{
-    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
-    
-    if (vtable->insert_node)
-    {
-        return vtable->insert_node(obj, node);
-    }
-    else
-    {
-        LOG(ERR_CONSTRUCT(NullPointer), "insert_node function not exist in vtable");
-        return false;
-    }
-}
-
-void tree_remove(tree_obj_t *obj, int position)
+bool tree_remove(tree_obj_t *obj, tree_value_t *value)
 {
     tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
     if (vtable->remove)
     {
-        vtable->remove(obj, position);
+        return vtable->remove(obj, value);
     }
     else
     {
         LOG(ERR_CONSTRUCT(NullPointer), "remove function not exist in vtable");
+        return false;
     }
 }
 
-int tree_find(tree_obj_t *obj, tree_value_t *value) 
+tree_node_t *tree_find(tree_obj_t *obj, tree_value_t *value) 
 {
     tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
     
@@ -91,7 +77,7 @@ int tree_find(tree_obj_t *obj, tree_value_t *value)
     else
     {
         LOG(ERR_CONSTRUCT(NullPointer), "find function not exist in vtable");
-        return -1;
+        return NULL;
     }
 }
 
@@ -179,7 +165,7 @@ bool tree_end(tree_obj_t *obj)
     else
     {
         LOG(ERR_CONSTRUCT(NullPointer), "end function not exist in vtable");
-        return 0;
+        return false;
     }
 }
 
@@ -194,5 +180,20 @@ void tree_next(tree_obj_t *obj)
     else
     {
         LOG(ERR_CONSTRUCT(NullPointer), "next function not exist in vtable");
+    }
+}
+
+tree_value_t *tree_current(tree_obj_t *obj)
+{
+    tree_vtable_t *vtable = (tree_vtable_t *)obj->class->vtable;
+    
+    if (vtable->current)
+    {
+        return vtable->current(obj);
+    }
+    else
+    {
+        LOG(ERR_CONSTRUCT(NullPointer), "current function not exist in vtable");
+        return NULL;
     }
 }

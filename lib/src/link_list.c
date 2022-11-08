@@ -7,18 +7,18 @@ static void link_list_constructor(obj_t *obj, obj_constructor_args_t *args);
 static void link_list_destructor(obj_t *obj);
 
 const static list_vtable_t s_link_list_vtable = {
-        .insert = link_list_insert,
-        .remove = link_list_remove,
-        .find = link_list_find,
-        .get = link_list_get,
-        .set = link_list_set,
-        .clear = link_list_clear,
-        .length = NULL,
-        .begin = link_list_begin,
-        .end = link_list_end,
-        .next = link_list_next,
-        .pre = NULL,
-        .current = link_list_current };
+    .insert = link_list_insert,
+    .remove = link_list_remove,
+    .find = link_list_find,
+    .get = link_list_get,
+    .set = link_list_set,
+    .clear = link_list_clear,
+    .length = NULL,
+    .begin = link_list_begin,
+    .end = link_list_end,
+    .next = link_list_next,
+    .pre = NULL,
+    .current = link_list_current};
 
 const obj_class_t g_link_list_class = {
     .vtable = (obj_vtable_t *)&s_link_list_vtable,
@@ -26,12 +26,12 @@ const obj_class_t g_link_list_class = {
     .constructor_cb = link_list_constructor,
     .destructor_cb = link_list_destructor,
     .instance_size = sizeof(link_list_obj_t),
-    .class_name = "link list" };
+    .class_name = "link list"};
 
 list_obj_t *link_list_create(int item_size)
 {
     list_obj_t *obj = NULL;
-    list_constructor_args_t args = { 0 };
+    list_constructor_args_t args = {0};
 
     if (item_size > 0)
     {
@@ -43,7 +43,6 @@ list_obj_t *link_list_create(int item_size)
 
     return obj;
 }
-
 
 link_list_node_t *link_list_position(link_list_obj_t *list, int position)
 {
@@ -257,5 +256,8 @@ static void link_list_constructor(obj_t *obj, obj_constructor_args_t *args)
 
 static void link_list_destructor(obj_t *obj)
 {
-    link_list_clear((list_obj_t *)obj);
+    if (obj)
+    {
+        link_list_clear((list_obj_t *)obj);
+    }
 }
