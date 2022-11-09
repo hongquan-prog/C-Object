@@ -142,11 +142,13 @@ static bool general_tree_insert_node(tree_obj_t *obj, tree_node_t *node)
     {
         if (obj->root == NULL)
         {
+            ret = true;
             node->parent = NULL;
             obj->root = node;
         }
         else
         {
+            /* 此处查找是为了确定父节点的确存在于树中 */
             general_tree_node_t *parent = general_tree_find_from_node(obj, (general_tree_node_t *)obj->root, node->parent->value);
 
             if (parent != NULL)
@@ -201,6 +203,11 @@ bool general_tree_insert(tree_obj_t *obj, const tree_value_t *value, tree_node_t
             node->parent = parent;
             memcpy(node->value, value, obj->item_size);
             ret = general_tree_insert_node(obj, node);
+
+            if (false == ret)
+            {
+                general_tree_delete_node((general_tree_node_t *)node);
+            }
         }
     }
 
@@ -323,8 +330,11 @@ void general_tree_begin(tree_obj_t *obj)
 {
     general_tree_obj_t *tree = (general_tree_obj_t *)obj;
 
-    queue_clear(tree->queue);
-    queue_add(tree->queue, &obj->root);
+    if (tree->root)
+    {
+        queue_clear(tree->queue);
+        queue_add(tree->queue, &obj->root);
+    }
 }
 
 bool general_tree_end(tree_obj_t *obj)
@@ -338,9 +348,8 @@ void general_tree_next(tree_obj_t *obj)
 {
     general_tree_node_t *node = NULL;
     general_tree_obj_t *tree = (general_tree_obj_t *)obj;
-    bool ret = (queue_length(tree->queue) != 0);
 
-    if (ret)
+    if (queue_length(tree->queue) != 0)
     {
         queue_front(tree->queue, &node);
         queue_remove(tree->queue);

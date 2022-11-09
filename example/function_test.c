@@ -1,19 +1,6 @@
-#include "err.h"
-#include "vector.h"
-#include "link_list.h"
-#include "circle_list.h"
-#include "dual_link_list.h"
-#include "dual_circle_list.h"
-#include "static_queue.h"
-#include "link_queue.h"
-#include "static_stack.h"
-#include "link_stack.h"
-#include "general_tree.h"
-#include <unistd.h>
-#include <string.h>
+#include "function_test.h"
 
-#define MAX_LEN 10
-static int array[MAX_LEN] = {0};
+static int array[ARRAY_MAX_LEN] = {0};
 
 void list_test(list_obj_t *list)
 {
@@ -22,7 +9,7 @@ void list_test(list_obj_t *list)
     printf("\r\ntype: %s\r\n", OBJECT_NAME(list));
 
     /* insert */
-    for (i = 0; i < MAX_LEN; i++)
+    for (i = 0; i < ARRAY_MAX_LEN; i++)
     {
         array[i] = i;
         list_insert(list, i, &array[i]);
@@ -46,7 +33,7 @@ void list_test(list_obj_t *list)
     /* set */
     for (i = 0; i < list_length(list); i++)
     {
-        int val = MAX_LEN - i;
+        int val = ARRAY_MAX_LEN - i;
         list_set(list, i, &val);
     }
 
@@ -74,7 +61,7 @@ void list_test(list_obj_t *list)
 
         /* push front */
         printf("push front: ");
-        for (i = 0; i < MAX_LEN; i++)
+        for (i = 0; i < ARRAY_MAX_LEN; i++)
         {
             dual_circle_list_push_front(list, &i);
             printf("%d ", i);
@@ -83,7 +70,7 @@ void list_test(list_obj_t *list)
 
         /* pop back */
         printf("pop back: ");
-        for (i = 0; i < MAX_LEN; i++)
+        for (i = 0; i < ARRAY_MAX_LEN; i++)
         {
             int temp = 0;
             dual_circle_list_pop_back(list, &temp);
@@ -93,7 +80,7 @@ void list_test(list_obj_t *list)
 
         /* push back */
         printf("push back: ");
-        for (i = 0; i < MAX_LEN; i++)
+        for (i = 0; i < ARRAY_MAX_LEN; i++)
         {
             dual_circle_list_push_back(list, &i);
             printf("%d ", i);
@@ -119,7 +106,7 @@ void queue_test(queue_obj_t *obj)
 
     /* add */
     printf("add: ");
-    for (i = 0; i < MAX_LEN; i++)
+    for (i = 0; i < ARRAY_MAX_LEN; i++)
     {
         queue_add(obj, &i);
         printf("%d ", i);
@@ -157,7 +144,7 @@ void stack_test(stack_obj_t *obj)
 
     /* push */
     printf("push: ");
-    for (i = 0; i < MAX_LEN; i++)
+    for (i = 0; i < ARRAY_MAX_LEN; i++)
     {
         stack_push(obj, &i);
         printf("%d ", i);
@@ -187,7 +174,7 @@ void stack_test(stack_obj_t *obj)
     printf("\r\n");
 }
 
-void tree_test(tree_obj_t *obj)
+void general_tree_test(tree_obj_t *obj)
 {
     int val = 0;
     int find = 0;
@@ -258,49 +245,71 @@ void tree_test(tree_obj_t *obj)
     printf("degree: %d \r\n", tree_degree(obj));
 }
 
-int main()
+void binary_tree_test(tree_obj_t *obj)
 {
-    list_obj_t *list = NULL;
-    queue_obj_t *queue = NULL;
-    stack_obj_t *stack = NULL;
+    int val = 0;
+    int find = 0;
+    /* insert
+     *         0
+     *   1           2
+     * 3   4      5     6
+     */
+    printf("\r\ntype: %s\r\n", OBJECT_NAME(obj));
 
-    list = vector_create(sizeof(int), MAX_LEN);
-    list_test(list);
-    list_delete(list);
+    printf("insert:\r\n         0\r\n   1           2\r\n 3   4      5     6\r\n");
+    tree_insert(obj, &val, NULL);
+    find = 0;
+    val = 1;
+    tree_insert(obj, &val, tree_find(obj, &find));
+    val = 2;
+    tree_insert(obj, &val, tree_find(obj, &find));
 
-    list = link_list_create(sizeof(int));
-    list_test(list);
-    list_delete(list);
+    find = 1;
+    val = 3;
+    tree_insert(obj, &val, tree_find(obj, &find));
+    val = 4;
+    tree_insert(obj, &val, tree_find(obj, &find));
 
-    list = circle_list_create(sizeof(int));
-    list_test(list);
-    list_delete(list);
+    find = 2;
+    val = 5;
+    tree_insert(obj, &val, tree_find(obj, &find));
+    val = 6;
+    tree_insert(obj, &val, tree_find(obj, &find));
 
-    list = dual_link_list_create(sizeof(int));
-    list_test(list);
-    list_delete(list);
+    /* height */
+    printf("height: %d \r\n", tree_height(obj));
 
-    list = dual_circle_list_create(sizeof(int));
-    list_test(list);
-    list_delete(list);
+    /* count */
+    printf("count: %d \r\n", tree_count(obj));
 
-    queue = static_queue_create(sizeof(int), MAX_LEN);
-    queue_test(queue);
-    queue_delete(queue);
+    /* degree */
+    printf("degree: %d \r\n", tree_degree(obj));
 
-    queue = link_queue_create(sizeof(int));
-    queue_test(queue);
-    queue_delete(queue);
+    /* traverse */
+    printf("traverse: ");
+    for (tree_begin(obj); !tree_end(obj); tree_next(obj))
+    {
+        printf("%d ", *((int *)tree_current(obj)));
+    }
+    printf("\r\n");
 
-    stack = static_stack_create(sizeof(int), MAX_LEN);
-    stack_test(stack);
-    stack_delete(stack);
+    /* remove */
+    val = 2;
+    tree_remove(obj, &val);
+    printf("after 2 removed: \r\n     0\r\n   1\r\n 3   4\r\n");
+    printf("traverse: ");
+    for (tree_begin(obj); !tree_end(obj); tree_next(obj))
+    {
+        printf("%d ", *((int *)tree_current(obj)));
+    }
+    printf("\r\n");
 
-    stack = link_stack_create(sizeof(int));
-    stack_test(stack);
-    stack_delete(stack);
+    /* height */
+    printf("height: %d \r\n", tree_height(obj));
 
-    tree_obj_t *tree = general_tree_create(sizeof(int));
-    tree_test(tree);
-    tree_delete(tree);
+    /* count */
+    printf("count: %d \r\n", tree_count(obj));
+
+    /* degree */
+    printf("degree: %d \r\n", tree_degree(obj));
 }

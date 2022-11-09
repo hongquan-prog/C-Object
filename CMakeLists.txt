@@ -12,11 +12,13 @@ set(ERR_TOOLS error-generator)
 
 # c sources
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/lib/src C_SOURCES)
-list(APPEND C_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/error/src/err.c main.c)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/example C_SOURCES)
+list(APPEND C_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/error/src/err.c)
 
 # c includes
 set(C_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/lib/inc
-${CMAKE_CURRENT_SOURCE_DIR}/error/ErrorGenerator/common)
+    ${CMAKE_CURRENT_SOURCE_DIR}/example
+    ${CMAKE_CURRENT_SOURCE_DIR}/error/ErrorGenerator/common)
 
 # compile tools
 add_custom_target(${ERR_TOOLS})
